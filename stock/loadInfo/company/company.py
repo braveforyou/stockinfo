@@ -11,20 +11,18 @@ import stock.baseinfo.HttpUtil as httpUtil
 from bs4 import BeautifulSoup
 
 
-
-
 def analysis(sallary):
     riseAll = []
     for i in range(4):
         rise1 = (sallary[i] - sallary[i + 4]) / sallary[i + 4] * 100
         rise2 = (sallary[i + 4] - sallary[i + 8]) / sallary[i + 8] * 100
         rise3 = (sallary[i + 8] - sallary[i + 12]) / sallary[i + 12] * 100
-        riseAll.append([round(rise1,2), round(rise2,2), round(rise3,2)])
+        riseAll.append([round(rise1, 2), round(rise2, 2), round(rise3, 2)])
     return riseAll
 
 
 def getAllFiance():
-    report1 = ts.get_report_data(2019,2)
+    report1 = ts.get_report_data(2019, 2)
     report1.to_csv('D:\\20192.csv')
 
     '''
@@ -52,7 +50,6 @@ def getAllFiance():
     report12.to_csv('D:\\20163.csv')
     '''
 
-
     return
 
 
@@ -72,74 +69,99 @@ report_date,发布日期
 import numpy as np
 import pandas as pd
 
+
 def getstname(st):
-    st=int(st)
-    st=str(st)
-    if(len(st)==1):
-        st='00000'+st
-    elif(len(st)==2):
-        st='0000'+st
-    elif(len(st)==3):
-        st='000'+st
-    elif(len(st)==4):
-        st='00'+st
-    elif(len(st)==5):
-        st='0'+st
+    st = int(st)
+    st = str(st)
+    if (len(st) == 1):
+        st = '00000' + st
+    elif (len(st) == 2):
+        st = '0000' + st
+    elif (len(st) == 3):
+        st = '000' + st
+    elif (len(st) == 4):
+        st = '00' + st
+    elif (len(st) == 5):
+        st = '0' + st
     return st
 
-def Combine():
-    mid201902=pd.read_csv('D:\\20192.csv')[['code','net_profits','profits_yoy']]
-    mid201902=mid201902.loc[mid201902['net_profits'] > 0]
-    mid201802 = pd.read_csv('D:\\20182.csv')[['code','net_profits','profits_yoy']]
-    mid01702 = pd.read_csv('D:\\20172.csv')[['code','net_profits','profits_yoy']]
 
-    mid201902=mid201902.rename(columns={'profits_yoy':'profits_yoy3'})
-    mid201802=mid201802.rename(columns={'profits_yoy':'profits_yoy2'})
-    mid01702=mid01702.rename(columns={'profits_yoy':'profits_yoy1'})
+def Combine():
+    mid201902 = pd.read_csv('D:\\20192.csv')[['code', 'net_profits', 'profits_yoy']]
+    mid201902 = mid201902.loc[mid201902['net_profits'] > 0]
+    mid201802 = pd.read_csv('D:\\20182.csv')[['code', 'net_profits', 'profits_yoy']]
+    mid01702 = pd.read_csv('D:\\20172.csv')[['code', 'net_profits', 'profits_yoy']]
+
+    mid201902 = mid201902.rename(columns={'profits_yoy': 'profits_yoy3'})
+    mid201802 = mid201802.rename(columns={'profits_yoy': 'profits_yoy2'})
+    mid01702 = mid01702.rename(columns={'profits_yoy': 'profits_yoy1'})
 
     midinfo = pd.merge(mid201902, mid201802, on=['code'], how='left')
     midinfo = pd.merge(midinfo, mid01702, on=['code'], how='left')
 
+    year201902 = pd.read_csv('D:\\20184.csv')[['code', 'net_profits', 'profits_yoy']]
+    year201802 = pd.read_csv('D:\\20174.csv')[['code', 'net_profits', 'profits_yoy']]
+    year201702 = pd.read_csv('D:\\20164.csv')[['code', 'net_profits', 'profits_yoy']]
+    year201902 = year201902.loc[year201902['net_profits'] > 0]
 
-    year201902 = pd.read_csv('D:\\20184.csv')[['code','net_profits','profits_yoy']]
-    year201802 = pd.read_csv('D:\\20174.csv')[['code','net_profits','profits_yoy']]
-    year201702 = pd.read_csv('D:\\20164.csv')[['code','net_profits','profits_yoy']]
-    year201902=year201902.loc[year201902['net_profits'] > 0]
-
-    year201902=year201902.rename(columns={'profits_yoy':'profits_yoy3'})
-    year201802=year201802.rename(columns={'profits_yoy':'profits_yoy2'})
-    year201702=year201702.rename(columns={'profits_yoy':'profits_yoy1'})
+    year201902 = year201902.rename(columns={'profits_yoy': 'profits_yoy3'})
+    year201802 = year201802.rename(columns={'profits_yoy': 'profits_yoy2'})
+    year201702 = year201702.rename(columns={'profits_yoy': 'profits_yoy1'})
 
     yearinfo = pd.merge(year201902, year201802, on=['code'], how='left')
     yearinfo = pd.merge(yearinfo, year201702, on=['code'], how='left')
 
-    midinfo=midinfo[['code','profits_yoy3','profits_yoy2','profits_yoy1']]
-    midinfo=midinfo.loc[midinfo['profits_yoy3'] > 0]
-    midinfo=midinfo.loc[midinfo['profits_yoy2'] > 0]
+    midinfo = midinfo[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1']]
+    midinfo = midinfo.loc[midinfo['profits_yoy3'] > 0]
+    midinfo = midinfo.loc[midinfo['profits_yoy2'] > 0]
     midinfo = midinfo.drop_duplicates(subset=['code'], keep='first')
 
-    stlist=list(np.array(midinfo['code']))
+    midinfo.to_csv('D:\\midinfo.csv')
+    stlist = list(np.array(midinfo['code']))
 
-    #分别是
-    yearinfo=yearinfo[['code','profits_yoy3','profits_yoy2','profits_yoy1']]
-    yearinfo=yearinfo.loc[yearinfo['profits_yoy3'] > 0]
-    yearinfo=yearinfo.loc[yearinfo['profits_yoy2'] > 0]
+    # 分别是
+    yearinfo = yearinfo[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1']]
+    yearinfo = yearinfo.loc[yearinfo['profits_yoy3'] > 0]
+    yearinfo = yearinfo.loc[yearinfo['profits_yoy2'] > 0]
     yearinfo = yearinfo.drop_duplicates(subset=['code'], keep='first')
 
-    stlist2=list(np.array(yearinfo['code']))
-    combine=set(stlist)&set(stlist2)
+    yearinfo.to_csv('D:\\yearinfo.csv')
 
+    stlist2 = list(np.array(yearinfo['code']))
+    combine = set(stlist) & set(stlist2)
 
-    needList=[]
-    midinfo=np.array(midinfo[['code','profits_yoy3','profits_yoy2']])
+    needList = []
+    midinfo = np.array(midinfo[['code', 'profits_yoy3', 'profits_yoy2']])
     for i in range(len(midinfo)):
-        if(midinfo[i,0] in list(combine)):
-            if(midinfo[i,1]>=midinfo[i,2]):
-                needList.append(getstname(midinfo[i,0]))
+        if (midinfo[i, 0] in list(combine)):
+            if (midinfo[i, 1] >= midinfo[i, 2]):
+                needList.append(getstname(midinfo[i, 0]))
 
     print([getstname(x) for x in combine])
     print(len(combine))
 
     print(needList)
     print(len(needList))
-#Combine()
+
+
+
+
+def getCompanyInfo(stname):
+    stname=int(stname.replace('st',''))
+    midinfo = pd.read_csv('D:\\midinfo.csv')[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1']]
+    yearinfo = pd.read_csv('D:\\yearinfo.csv')[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1']]
+
+    midinfo=midinfo.loc[midinfo['code'] == stname]
+    yearinfo=yearinfo.loc[yearinfo['code'] == stname]
+
+    midinfo=np.array(midinfo)
+    yearinfo=np.array(yearinfo)
+    mcontent=""
+    yearcontent=""
+    if(len(midinfo)!=0):
+        mcontent="中报 增长率:"+str(midinfo[0][1])+"% - "+str(midinfo[0][2])+"% - "+str(midinfo[0][3])+"%"
+    if (len(yearinfo) != 0):
+        yearcontent += "  年报 增长率:" + str(yearinfo[0][1]) + "% - " + str(yearinfo[0][2]) + "% - " + str(yearinfo[0][3])+"%"
+
+
+    return mcontent,yearcontent

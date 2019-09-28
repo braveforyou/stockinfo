@@ -38,16 +38,17 @@ def index(*, page='1'):
 
     info = pd.read_csv("D:\\needStList.csv")
     info = np.array(info)
-    print(info)
+
     content = []
     for i in range(len(info)):
         tempdict = {}
         tempdict['name'] = str(info[i][1])
         tempdict['refuseInfo'] = str(info[i][2])
 
-        #companyInfo=company.getCompanyInfo(info[i][1])
+        mc,yc=company.getCompanyInfo(info[i][1])
 
-        #tempdict['companInfo'] =companyInfo
+        tempdict['companyInfo_middleReport'] =mc
+        tempdict['companyInfo_yearReport'] = yc
         content.append(tempdict)
 
     return {

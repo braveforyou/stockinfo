@@ -118,6 +118,10 @@ def init(loop):
     logging.info('server started at http://127.0.0.1:9000...')
     return srv
 
+import stock.loadHistoryOriginalBatch as loadHis
+
+#loadHis.process()#读取现有数据
+
 if __name__ == '__main__':
     start = time.time()
     # loadHis.process()  # 读取现有数据

@@ -58,7 +58,7 @@ def getHistoryFile(code, begain=16, end=19):
             temp = np.vstack((stockList, temp))
     column = ['data', 'open', 'close', 'high', 'bottom', 'amount']
     filename = "D:\PythonTrain\stockListM\\" + str(code) + ".csv"
-    print(filename)
+
     if(len(temp)>200):
         temp = temp[temp[:, 0].argsort()][-200:]
 
@@ -76,7 +76,6 @@ countx = [0]
 def getinfo(stockname):
     # 时间 开盘 收盘  最高 最低 成交量
     try:
-        print(countx[0])
         countx[0] += 1
         getHistoryFile(stockname)
     except:
@@ -93,8 +92,7 @@ def getstockinfoList(stocklist):
 def main():
     a = datetime.datetime.now()
     listtrain = consts.needStockMf1
-    print(listtrain)
+
     getstockinfoList(listtrain)
     d = datetime.datetime.now()
     print("process end in ", (d - a).seconds)
-    print(SuccessList)

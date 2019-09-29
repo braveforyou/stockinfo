@@ -134,7 +134,7 @@ def process(stname,His=False):
         avgList2V, avgList3V, avgList5V, avgList10V = getVolumeAvgLine(data[:, 5],datasize)
         raiseList3, raiseList5, raiseList10 = getRaise(data[:, 6], data[:, 3],datasize)
         label3, rise, down = getLabel(data[:, 3],datasize)
-        #print(len(label3),len(data),datasize)
+
         data = np.c_[data[-datasize:], raiseList3]
         data = np.c_[data[-datasize:], raiseList5]
         data = np.c_[data[-datasize:], raiseList10]

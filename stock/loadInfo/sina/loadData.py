@@ -88,10 +88,8 @@ def getstockinfoList(stocklist):
 def main():
     a = datetime.datetime.now()
     listtrain = consts.needStockMf1
-    print(listtrain)
     getstockinfoList(listtrain)
     d = datetime.datetime.now()
     print("process end in ", (d - a).seconds)
-    print(SuccessList)
 
 

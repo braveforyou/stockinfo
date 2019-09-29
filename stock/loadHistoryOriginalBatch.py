@@ -19,7 +19,6 @@ def getinfo(stockname,His=False):
     startTime = '2016-02-01'
     if(His==False):
         startTime='2019-01-01'
-    print(stockname)
     try:
         if(His==True):
             history.getHistoryFile(stockname,'D',startTime)
@@ -37,5 +36,4 @@ def getstockinfoList(stocklist):
 
 def process():
     listtrain= consts.needStockM
-    print(listtrain)
     getstockinfoList(listtrain)

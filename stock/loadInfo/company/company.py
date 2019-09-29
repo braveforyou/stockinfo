@@ -171,15 +171,17 @@ def getCompanyInfo(stname):
     if (len(midinfo) != 0):
         mcontent = "中报 增长率:" + str(midinfo[0][1]) + "%  " + str(midinfo[0][2]) + "%  " + str(midinfo[0][3]) + "%"
         meiguMid = "中报  每股收益率:" + str(midinfo[0][4]) + "%  " + str(midinfo[0][5]) + "%  " + str(midinfo[0][6]) + "%"
+        if (midinfo[0][4] < midinfo[0][5]):
+            meiGuDecress = -1
+        if (midinfo[0][4] < -20):
+            print('!!!!!!!',stname,midinfo[0][4])
+            meiGuDecress2 = -5
     if (len(yearinfo) != 0):
         yearcontent += "  年报 增长率:" + str(yearinfo[0][1]) + "%  " + \
                        str(yearinfo[0][2]) + "%  " + str(yearinfo[0][3]) + "%"
         meiguYear += "  年报 每股收益率:" + str(yearinfo[0][4]) + "%  " + \
                      str(yearinfo[0][5]) + "%  " + str(yearinfo[0][6]) + "%"
-        if (yearinfo[0][4] < yearinfo[0][5]):
-            meiGuDecress = -1
-        if (yearinfo[0][4] < 0):
-            meiGuDecress2 = -5
+
 
     return mcontent, yearcontent, meiguMid, meiguYear, meiGuDecress, meiGuDecress2
 

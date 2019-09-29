@@ -9,6 +9,7 @@ from www.coroweb import get, post
 from www.apis import Page, APIValueError, APIResourceNotFoundError
 import stock.loadInfo.company.company as company
 
+
 def get_page_index(page_str):
     p = 1
     try:
@@ -32,7 +33,6 @@ import numpy as np
 
 @get('/')
 def index(*, page='1'):
-    print(page)
     num = 1
     page = Page(num)
 
@@ -44,23 +44,22 @@ def index(*, page='1'):
         tempdict = {}
         tempdict['name'] = str(info[i][1])
 
+        mc, yc, mc2, yc2, meiguDecress, meiguDecress2 = company.getCompanyInfo(info[i][1])
 
-        mc,yc,mc2,yc2,meiguDecress,meiguDecress2=company.getCompanyInfo(info[i][1])
-
-        tempdict['companyInfo_middleReport'] =mc
+        tempdict['companyInfo_middleReport'] = mc
         tempdict['companyInfo_yearReport'] = yc
         tempdict['companyInfo_middleMeiGuReport'] = mc2
         tempdict['companyInfo_yearMeiGuReport'] = yc2
 
-        baseinfo=company.getBaseInfo(info[i][1])
-
+        baseinfo = company.getBaseInfo(info[i][1])
 
         temp = info[i][2]
         temp = temp.replace('[', '').replace(']', '')
         temp = temp.split(',')
         temp.append(meiguDecress)
         temp.append(meiguDecress2)
-        temp=[float(x) for x in temp]
+        temp = [float(x) for x in temp]
+        if (temp[6] < 0): continue  # 近一季度  现在是中报的每股收益率下降20%以上的不要
         tempdict['refuseInfo'] = temp
         tempdict['score'] = sum(temp)
         tempdict['baseinfo'] = baseinfo

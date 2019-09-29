@@ -43,12 +43,27 @@ def index(*, page='1'):
     for i in range(len(info)):
         tempdict = {}
         tempdict['name'] = str(info[i][1])
-        tempdict['refuseInfo'] = str(info[i][2])
 
-        mc,yc=company.getCompanyInfo(info[i][1])
+
+        mc,yc,mc2,yc2,meiguDecress,meiguDecress2=company.getCompanyInfo(info[i][1])
 
         tempdict['companyInfo_middleReport'] =mc
         tempdict['companyInfo_yearReport'] = yc
+        tempdict['companyInfo_middleMeiGuReport'] = mc2
+        tempdict['companyInfo_yearMeiGuReport'] = yc2
+
+        baseinfo=company.getBaseInfo(info[i][1])
+
+
+        temp = info[i][2]
+        temp = temp.replace('[', '').replace(']', '')
+        temp = temp.split(',')
+        temp.append(meiguDecress)
+        temp.append(meiguDecress2)
+        temp=[float(x) for x in temp]
+        tempdict['refuseInfo'] = temp
+        tempdict['score'] = sum(temp)
+        tempdict['baseinfo'] = baseinfo
         content.append(tempdict)
 
     return {

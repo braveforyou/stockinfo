@@ -315,48 +315,53 @@ def openAnalysis(close, open, gap):
     return 0
 
 
-# 挑选
-def filter1(close, gap, avg10, avg20, avg5, pchange, open):
+# 5下交叉10 均在20以上，可等待买入
+def tiejinDrecressV4(avg5, avg10, avg20, gap):
+    if (avg5[gap - 1] < avg10[gap - 1] and avg10[gap - 1] > avg20[gap - 1] and
+            avg5[gap - 2] < avg10[gap - 2] and avg10[gap - 2] > avg20[gap - 2] and
+            avg5[gap - 3] < avg10[gap - 3] and avg10[gap - 3] > avg20[gap - 3]):
+        # if(pchange[gap-1]>0):
+        return 1
 
-    if (tiejinDrecress(close, avg5, gap, pchange, open) == 1 or
-            tiejinDrecress(close, avg10, gap, pchange, open) == 1):
-        return -100
-
-    if (tiejinDrecressV2(close, avg5, gap, pchange, open) == 1):
-        return -100
-
-    if (tiejinDrecressV3(close, avg5, avg10, avg20, gap) == 1):
-        return -100
-
-    if (openAnalysis(close, open, gap) == 1):
-        return -100
-
-    return 1
+    return 0
 
 
 
 # 挑选
 def filter1Info(close, gap, avg10, avg20, avg5, pchange, open):
-    flags=[0,0,0,0]
-    info=[]
+    flags = []
+
+    # 5_10_20这个形态特别厉害 通道调整
+    if (tiejinDrecressV4(avg5, avg10, avg20, gap) == 1):
+        flags.append(1)
+    else:
+        flags.append(0)
+    # 下降三阴兵
     if (tiejinDrecress(close, avg5, gap, pchange, open) == 1 or
             tiejinDrecress(close, avg10, gap, pchange, open) == 1):
-        flags[0]=-1
-        info.append('下降三阴兵')
+        flags.append(-1)
+    else:
+        flags.append(0)
 
+    # 顶部下降
     if (tiejinDrecressV2(close, avg5, gap, pchange, open) == 1):
-        flags[1] = -1
-        info.append('顶部下降')
+        flags.append(-1)
+    else:
+        flags.append(0)
 
+    #纯加速上升通道
     if (tiejinDrecressV3(close, avg5, avg10, avg20, gap) == 1):
-        flags[2] = -1
-        info.append('全部上涨')
-
+        flags.append(-1)
+    else:
+        flags.append(0)
+    # 三线下降
     if (openAnalysis(close, open, gap) == 1):
-        flags[3] = -1
-        info.append('三线下降')
+        flags.append(-1)
+    else:
+        flags.append(0)
 
-    return flags,info
+    return flags
+
 
 # 自定义退出
 def getLabelMine(pchange, gap, step=3, top=12, min=-5):
@@ -473,46 +478,10 @@ def getLabelBestNew(gap, close, step=3):
     return labelorignal
 
 
-# 全部在线上  效果好 单独使用优于 haveLabel
-def filterBad(datafm, gap=-1, step=3, nolabel=False):
-    datafm = datafm[['close', 'oavg5', 'oavg10', 'oavg20', 'oavg30',
-                     'oavg60', 'volume', 'p_change', 'high', 'low', 'open']]
-    columnx = [x for x in datafm]
-    if (gap + step < len(np.array(datafm))):
-        ordata = np.array(datafm)[:gap + step, :]
-    else:
-        ordata = np.array(datafm)
-    ordata = pd.DataFrame(ordata, columns=columnx)
-
-    datafm = np.array(datafm)
-    close = datafm[:, 0]
-    avg5 = datafm[:, 1]
-    avg10 = datafm[:, 2]
-    avg20 = datafm[:, 3]
-    avg30 = datafm[:, 4]
-    avg60 = datafm[:, 5]
-    volume = datafm[:, 6]
-    pchange = datafm[:, 7]
-    high = datafm[:, 8]
-    low = datafm[:, 9]
-    open = datafm[:, 10]
-
-    labelbest = getLabelBestNew(gap, close)
-    label1 = getLabelMine(pchange, gap)
-    label2 = getLabelMine2(pchange, gap)
-    label3 = getLabelMine3(open, close, gap)
-    if (label1 == -100): return -100, [], []
-
-    labels = [labelbest, label1, label2, label3]
-    labels = [round(x, 3) for x in labels]
-    return filter1(close, gap, avg10, avg20, avg5, pchange, open), labels, ordata,
-
-
-
 
 
 # 全部在线上  效果好 单独使用优于 haveLabel
-def filterBad2(datafm,gap=0):
+def filterBad2(datafm, gap=0):
     datafm = datafm[['close', 'oavg5', 'oavg10', 'oavg20', 'oavg30',
                      'oavg60', 'volume', 'p_change', 'high', 'low', 'open']]
 

@@ -87,31 +87,39 @@ def getstname(st):
 
 
 def Combine():
-    mid201902 = pd.read_csv('D:\\20192.csv')[['code', 'net_profits', 'profits_yoy']]
+    mid201902 = pd.read_csv('D:\\20192.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
     mid201902 = mid201902.loc[mid201902['net_profits'] > 0]
-    mid201802 = pd.read_csv('D:\\20182.csv')[['code', 'net_profits', 'profits_yoy']]
-    mid01702 = pd.read_csv('D:\\20172.csv')[['code', 'net_profits', 'profits_yoy']]
+    mid201802 = pd.read_csv('D:\\20182.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
+    mid01702 = pd.read_csv('D:\\20172.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
 
     mid201902 = mid201902.rename(columns={'profits_yoy': 'profits_yoy3'})
     mid201802 = mid201802.rename(columns={'profits_yoy': 'profits_yoy2'})
     mid01702 = mid01702.rename(columns={'profits_yoy': 'profits_yoy1'})
 
+    mid201902 = mid201902.rename(columns={'eps_yoy': 'eps_yoy3'})
+    mid201802 = mid201802.rename(columns={'eps_yoy': 'eps_yoy2'})
+    mid01702 = mid01702.rename(columns={'eps_yoy': 'eps_yoy1'})
+
     midinfo = pd.merge(mid201902, mid201802, on=['code'], how='left')
     midinfo = pd.merge(midinfo, mid01702, on=['code'], how='left')
 
-    year201902 = pd.read_csv('D:\\20184.csv')[['code', 'net_profits', 'profits_yoy']]
-    year201802 = pd.read_csv('D:\\20174.csv')[['code', 'net_profits', 'profits_yoy']]
-    year201702 = pd.read_csv('D:\\20164.csv')[['code', 'net_profits', 'profits_yoy']]
+    year201902 = pd.read_csv('D:\\20184.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
+    year201802 = pd.read_csv('D:\\20174.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
+    year201702 = pd.read_csv('D:\\20164.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
     year201902 = year201902.loc[year201902['net_profits'] > 0]
 
     year201902 = year201902.rename(columns={'profits_yoy': 'profits_yoy3'})
     year201802 = year201802.rename(columns={'profits_yoy': 'profits_yoy2'})
     year201702 = year201702.rename(columns={'profits_yoy': 'profits_yoy1'})
 
+    year201902 = year201902.rename(columns={'eps_yoy': 'eps_yoy3'})
+    year201802 = year201802.rename(columns={'eps_yoy': 'eps_yoy2'})
+    year201702 = year201702.rename(columns={'eps_yoy': 'eps_yoy1'})
+
     yearinfo = pd.merge(year201902, year201802, on=['code'], how='left')
     yearinfo = pd.merge(yearinfo, year201702, on=['code'], how='left')
 
-    midinfo = midinfo[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1']]
+    midinfo = midinfo[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1', 'eps_yoy3', 'eps_yoy2', 'eps_yoy1']]
     midinfo = midinfo.loc[midinfo['profits_yoy3'] > 0]
     midinfo = midinfo.loc[midinfo['profits_yoy2'] > 0]
     midinfo = midinfo.drop_duplicates(subset=['code'], keep='first')
@@ -120,7 +128,7 @@ def Combine():
     stlist = list(np.array(midinfo['code']))
 
     # 分别是
-    yearinfo = yearinfo[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1']]
+    yearinfo = yearinfo[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1', 'eps_yoy3', 'eps_yoy2', 'eps_yoy1']]
     yearinfo = yearinfo.loc[yearinfo['profits_yoy3'] > 0]
     yearinfo = yearinfo.loc[yearinfo['profits_yoy2'] > 0]
     yearinfo = yearinfo.drop_duplicates(subset=['code'], keep='first')
@@ -137,31 +145,68 @@ def Combine():
             if (midinfo[i, 1] >= midinfo[i, 2]):
                 needList.append(getstname(midinfo[i, 0]))
 
-    print([getstname(x) for x in combine])
-    print(len(combine))
 
-    print(needList)
-    print(len(needList))
-
-
+# Combine()
 
 
 def getCompanyInfo(stname):
-    stname=int(stname.replace('st',''))
-    midinfo = pd.read_csv('D:\\midinfo.csv')[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1']]
-    yearinfo = pd.read_csv('D:\\yearinfo.csv')[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1']]
+    stname = int(stname.replace('st', ''))
+    midinfo = pd.read_csv('D:\\midinfo.csv')[
+        ['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1', 'eps_yoy3', 'eps_yoy2', 'eps_yoy1']]
+    yearinfo = pd.read_csv('D:\\yearinfo.csv')[
+        ['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1', 'eps_yoy3', 'eps_yoy2', 'eps_yoy1']]
 
-    midinfo=midinfo.loc[midinfo['code'] == stname]
-    yearinfo=yearinfo.loc[yearinfo['code'] == stname]
+    midinfo = midinfo.loc[midinfo['code'] == stname]
+    yearinfo = yearinfo.loc[yearinfo['code'] == stname]
 
-    midinfo=np.array(midinfo)
-    yearinfo=np.array(yearinfo)
-    mcontent=""
-    yearcontent=""
-    if(len(midinfo)!=0):
-        mcontent="中报 增长率:"+str(midinfo[0][1])+"% - "+str(midinfo[0][2])+"% - "+str(midinfo[0][3])+"%"
+    midinfo = np.array(midinfo)
+    yearinfo = np.array(yearinfo)
+    mcontent = ""
+    yearcontent = ""
+    meiguMid = ""
+    meiguYear = ""
+
+    meiGuDecress = 0
+    meiGuDecress2 = 0
+    if (len(midinfo) != 0):
+        mcontent = "中报 增长率:" + str(midinfo[0][1]) + "%  " + str(midinfo[0][2]) + "%  " + str(midinfo[0][3]) + "%"
+        meiguMid = "中报  每股收益率:" + str(midinfo[0][4]) + "%  " + str(midinfo[0][5]) + "%  " + str(midinfo[0][6]) + "%"
     if (len(yearinfo) != 0):
-        yearcontent += "  年报 增长率:" + str(yearinfo[0][1]) + "% - " + str(yearinfo[0][2]) + "% - " + str(yearinfo[0][3])+"%"
+        yearcontent += "  年报 增长率:" + str(yearinfo[0][1]) + "%  " + \
+                       str(yearinfo[0][2]) + "%  " + str(yearinfo[0][3]) + "%"
+        meiguYear += "  年报 每股收益率:" + str(yearinfo[0][4]) + "%  " + \
+                     str(yearinfo[0][5]) + "%  " + str(yearinfo[0][6]) + "%"
+        if (yearinfo[0][4] < yearinfo[0][5]):
+            meiGuDecress = -1
+        if (yearinfo[0][4] < 0):
+            meiGuDecress2 = -5
+
+    return mcontent, yearcontent, meiguMid, meiguYear, meiGuDecress, meiGuDecress2
 
 
-    return mcontent,yearcontent
+'''
+code,代码
+name,名称
+industry,所属行业
+area,地区
+pe,市盈率
+outstanding,流通股本(亿)
+totals,总股本(亿)
+totalAssets,总资产(万)
+npr,净利润率(%)
+   '''
+
+def getALLBaseInfo():
+    allBase = ts.get_stock_basics()
+
+    allBase.to_csv("D:\\allbase.csv")
+
+def getBaseInfo(stname):
+    stname = int(stname.replace('st', ''))
+    alldata=pd.read_csv("D:\\allbase.csv")
+    tempinfo = alldata.loc[alldata['code'] == stname]
+    tempinfo=tempinfo[['code','name','industry','area','outstanding','totals','totalAssets','npr']]
+
+    tempinfo=np.array(tempinfo)[0]
+
+    return list(tempinfo)

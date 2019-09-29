@@ -36,10 +36,10 @@ def inner(item):
         filename = "D:\PythonTrain\\stockListExpend\\" + str(item) + ".csv"
         dataframe = pd.read_csv(filename)
 
-        flag,info= filter.filterBad2(dataframe)
+        flag= filter.filterBad2(dataframe)
         if (sum(flag)>-1):
             lock.acquire()  # 加锁
-            needList.append(['st'+str(item),str(info)])
+            needList.append(['st'+str(item),str(flag)])
             lock.release()
     except:
         1

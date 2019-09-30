@@ -14,20 +14,19 @@
     <div class="uk-width-medium-3-4">
         {% for blog in blogs %}
             <article class="uk-article">
-                <h2><a href="/blog/{{ blog.baseinfo[0] }}">{{ blog.baseinfo[1] }}-- {{ blog.baseinfo[2] }}</a></h2>
+                <h2><a href="/blog/{{ blog.baseinfo[0] }}">{{ blog.baseinfo[1] }}({{ blog.baseinfo[0] }})-- {{ blog.baseinfo[2] }}--{{ blog.currentPrice }}</a></h2>
 
-                <p>流通股本:{{ blog.baseinfo[4] }} (亿)   总股本 {{ blog.baseinfo[5] }} (亿)  </p>
-
+                <p>流通股本:{{ blog.baseinfo[4] }} (亿) 总股本 {{ blog.baseinfo[5] }} (亿) </p>
+                <p>今年最大涨幅:{{ blog.maxrise }}%  今年当前涨幅 {{ blog.currentrise }}% </p>
                 <p style=" font-weight: 700;">收益情况：</p>
-                <p>资产收益率：{{ blog.baseinfo[7] }}% </p>
                 <p>{{ blog.companyInfo_middleMeiGuReport }}</p>
-                <p>{{ blog.companyInfo_yearMeiGuReport }}</p>
-                <p>{{ blog.companyInfo_middleReport }}</p>
-                <p>{{ blog.companyInfo_yearReport }}</p>
+                <p>{{ blog.companyInfo_oneQuartMeiGuReport }}</p>
+                <p>每股100收益：{{ blog.expectSallary100 }}元 资产收益率：{{ blog.baseinfo[7] }}% </p>
+
 
                 <p style=" font-weight: 700;">公告概况：</p>
                 <p>{{ blog.reportInfo }}</p>
-                <p >准则打分：{{ blog.score }}</p>
+                <p>准则打分：{{ blog.score }}</p>
 
                 <table border="1">
                     <tr>

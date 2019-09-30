@@ -29,6 +29,7 @@ def text2html(text):
 
 import pandas as pd
 import numpy as np
+import tushare as ts
 
 
 @get('/')
@@ -44,25 +45,42 @@ def index(*, page='1'):
         tempdict = {}
         tempdict['name'] = str(info[i][1])
 
-        mc, yc, mc2, yc2, meiguDecress, meiguDecress2 = company.getCompanyInfo(info[i][1])
+        meiguMid, oneMInfo, meiGuDecress, meiGuDecress2, zbsy = company.getCompanyInfo(info[i][1])
 
-        tempdict['companyInfo_middleReport'] = mc
-        tempdict['companyInfo_yearReport'] = yc
-        tempdict['companyInfo_middleMeiGuReport'] = mc2
-        tempdict['companyInfo_yearMeiGuReport'] = yc2
+
+        tempdict['companyInfo_middleMeiGuReport'] = meiguMid
+        tempdict['companyInfo_oneQuartMeiGuReport'] = oneMInfo
 
         baseinfo = company.getBaseInfo(info[i][1])
 
         temp = info[i][2]
         temp = temp.replace('[', '').replace(']', '')
         temp = temp.split(',')
-        temp.append(meiguDecress)
-        temp.append(meiguDecress2)
+        temp.append(meiGuDecress)
+        temp.append(meiGuDecress2)
         temp = [float(x) for x in temp]
-        if (temp[6] < 0): continue  # 近一季度  现在是中报的每股收益率下降20%以上的不要
+
+        if(zbsy[0]<0 and zbsy[0]!=-100):continue#进一季度的每股收益率
+
+        sallaryPerSt = baseinfo[-1]  # 每股价格
+        stname = info[i][1].replace('st', '')
+        priceNow = pd.read_csv("D:\PythonTrain\stockListNow\\" + stname + ".csv")
+        priceLatest = np.array(priceNow)[0, 3]
+        priceMax = np.max(np.array(priceNow)[:, 3])
+        priceNow = np.array(priceNow)[-1, 3]
+
+        expectSallary100 = sallaryPerSt * 100 / priceNow
+
+
         tempdict['refuseInfo'] = temp
         tempdict['score'] = sum(temp)
         tempdict['baseinfo'] = baseinfo
+        tempdict['expectSallary100'] = round(expectSallary100)
+
+
+        tempdict['currentrise'] = round((priceNow - priceLatest) / priceLatest * 100, 2)
+        tempdict['maxrise'] = round((priceMax - priceLatest) / priceLatest * 100, 2)
+        tempdict['currentPrice'] = round(priceNow, 2)
         content.append(tempdict)
 
     return {

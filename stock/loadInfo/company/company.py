@@ -24,32 +24,32 @@ def analysis(sallary):
 def getAllFiance():
     report1 = ts.get_report_data(2019, 2)
     report1.to_csv('D:\\20192.csv')
-
-    '''
-    report2 = ts.get_report_data(2019,1)
+    report2 = ts.get_report_data(2019, 1)
     report2.to_csv('D:\\20191.csv')
-    report3 = ts.get_report_data(2018,4)
+    report3 = ts.get_report_data(2018, 4)
     report3.to_csv('D:\\20184.csv')
-    report4 = ts.get_report_data(2018,3)
+    report4 = ts.get_report_data(2018, 3)
     report4.to_csv('D:\\20183.csv')
-    report5 = ts.get_report_data(2018,2)
+    report5 = ts.get_report_data(2018, 2)
     report5.to_csv('D:\\20182.csv')
-    report6 = ts.get_report_data(2018,1)
+    report6 = ts.get_report_data(2018, 1)
     report6.to_csv('D:\\20181.csv')
-    report7 = ts.get_report_data(2017,4)
+    report7 = ts.get_report_data(2017, 4)
     report7.to_csv('D:\\20174.csv')
-    report8 = ts.get_report_data(2017,3)
+    report8 = ts.get_report_data(2017, 3)
     report8.to_csv('D:\\20173.csv')
-    report9 = ts.get_report_data(2017,2)
+    report9 = ts.get_report_data(2017, 2)
     report9.to_csv('D:\\20172.csv')
-    report10 = ts.get_report_data(2017,1)
+    report10 = ts.get_report_data(2017, 1)
     report10.to_csv('D:\\20171.csv')
-    report11 = ts.get_report_data(2016,4)
+    report11 = ts.get_report_data(2016, 4)
     report11.to_csv('D:\\20164.csv')
-    report12 = ts.get_report_data(2016,3)
+    report12 = ts.get_report_data(2016, 3)
     report12.to_csv('D:\\20163.csv')
-    '''
-
+    report12 = ts.get_report_data(2016, 2)
+    report12.to_csv('D:\\20162.csv')
+    report12 = ts.get_report_data(2016, 1)
+    report12.to_csv('D:\\20161.csv')
     return
 
 
@@ -86,104 +86,94 @@ def getstname(st):
     return st
 
 
+# file3, file2, file1, 为当前周期， file32='', file22='', file12='' 为前者的前一周其，对于除第一周期外，需要得到当周期的实际数值就需要减去上一周其
+def analysisQuart(file3, file2, file1, file32='', file22='', file12='', quart=1):
+    data3 = pd.read_csv(file3)[['code', 'eps']]
+    data2 = pd.read_csv(file2)[['code', 'eps']]
+    data1 = pd.read_csv(file1)[['code', 'eps']]
+
+    data3 = data3.rename(columns={'eps': 'eps3'})
+    data2 = data2.rename(columns={'eps': 'eps2'})
+    data1 = data1.rename(columns={'eps': 'eps1'})
+
+    midinfo = pd.merge(data3, data2, on=['code'], how='inner')
+
+    midinfo = pd.merge(midinfo, data1, on=['code'], how='inner')
+    midinfo = midinfo[['code', 'eps3', 'eps2', 'eps1']]
+
+    midinfo2 = []
+    if (quart != 1):
+        data32 = pd.read_csv(file32)[['code', 'eps']]
+        data22 = pd.read_csv(file22)[['code', 'eps']]
+        data12 = pd.read_csv(file12)[['code', 'eps']]
+
+        data32 = data32.rename(columns={'eps': 'eps3'})
+        data22 = data22.rename(columns={'eps': 'eps2'})
+        data12 = data12.rename(columns={'eps': 'eps1'})
+
+        midinfo2 = pd.merge(data32, data22, on=['code'], how='left')
+
+        midinfo2 = pd.merge(midinfo2, data12, on=['code'], how='left')
+        midinfo2 = midinfo2[['code', 'eps3', 'eps2', 'eps1']]
+
+    if (len(midinfo2) != 0):
+        midinfo2 = np.array(midinfo2)
+        midinfo = np.array(midinfo)
+        print(len(midinfo), '---', len(midinfo2))
+        for i in range(len(midinfo)):
+            midinfo[i, 1] = midinfo[i, 1] - midinfo2[i, 1]
+            midinfo[i, 2] = midinfo[i, 2] - midinfo2[i, 2]
+            midinfo[i, 3] = midinfo[i, 3] - midinfo2[i, 3]
+        midinfo = pd.DataFrame(midinfo, columns=['code', 'eps3', 'eps2', 'eps1'])
+    midinfo.to_csv('D:\\quertinfo' + str(quart) + '.csv')
+    return list(np.array(midinfo['code']))
+
+
 def Combine():
-    mid201902 = pd.read_csv('D:\\20192.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
-    mid201902 = mid201902.loc[mid201902['net_profits'] > 0]
-    mid201802 = pd.read_csv('D:\\20182.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
-    mid01702 = pd.read_csv('D:\\20172.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
+    list4 = analysisQuart('D:\\20184.csv', 'D:\\20174.csv', 'D:\\20164.csv', 'D:\\20183.csv', 'D:\\20173.csv',
+                          'D:\\20163.csv', 4)
+    list3 = analysisQuart('D:\\20183.csv', 'D:\\20173.csv', 'D:\\20163.csv', 'D:\\20182.csv', 'D:\\20172.csv',
+                          'D:\\20162.csv', 3)
+    list2 = analysisQuart('D:\\20192.csv', 'D:\\20182.csv', 'D:\\20172.csv', 'D:\\20191.csv', 'D:\\20181.csv',
+                          'D:\\20171.csv', 2)
+    list1 = analysisQuart('D:\\20191.csv', 'D:\\20181.csv', 'D:\\20171.csv', 1)
 
-    mid201902 = mid201902.rename(columns={'profits_yoy': 'profits_yoy3'})
-    mid201802 = mid201802.rename(columns={'profits_yoy': 'profits_yoy2'})
-    mid01702 = mid01702.rename(columns={'profits_yoy': 'profits_yoy1'})
-
-    mid201902 = mid201902.rename(columns={'eps_yoy': 'eps_yoy3'})
-    mid201802 = mid201802.rename(columns={'eps_yoy': 'eps_yoy2'})
-    mid01702 = mid01702.rename(columns={'eps_yoy': 'eps_yoy1'})
-
-    midinfo = pd.merge(mid201902, mid201802, on=['code'], how='left')
-    midinfo = pd.merge(midinfo, mid01702, on=['code'], how='left')
-
-    year201902 = pd.read_csv('D:\\20184.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
-    year201802 = pd.read_csv('D:\\20174.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
-    year201702 = pd.read_csv('D:\\20164.csv')[['code', 'roe', 'eps_yoy', 'net_profits', 'profits_yoy']]
-    year201902 = year201902.loc[year201902['net_profits'] > 0]
-
-    year201902 = year201902.rename(columns={'profits_yoy': 'profits_yoy3'})
-    year201802 = year201802.rename(columns={'profits_yoy': 'profits_yoy2'})
-    year201702 = year201702.rename(columns={'profits_yoy': 'profits_yoy1'})
-
-    year201902 = year201902.rename(columns={'eps_yoy': 'eps_yoy3'})
-    year201802 = year201802.rename(columns={'eps_yoy': 'eps_yoy2'})
-    year201702 = year201702.rename(columns={'eps_yoy': 'eps_yoy1'})
-
-    yearinfo = pd.merge(year201902, year201802, on=['code'], how='left')
-    yearinfo = pd.merge(yearinfo, year201702, on=['code'], how='left')
-
-    midinfo = midinfo[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1', 'eps_yoy3', 'eps_yoy2', 'eps_yoy1']]
-    midinfo = midinfo.loc[midinfo['profits_yoy3'] > 0]
-    midinfo = midinfo.loc[midinfo['profits_yoy2'] > 0]
-    midinfo = midinfo.drop_duplicates(subset=['code'], keep='first')
-
-    midinfo.to_csv('D:\\midinfo.csv')
-    stlist = list(np.array(midinfo['code']))
-
-    # 分别是
-    yearinfo = yearinfo[['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1', 'eps_yoy3', 'eps_yoy2', 'eps_yoy1']]
-    yearinfo = yearinfo.loc[yearinfo['profits_yoy3'] > 0]
-    yearinfo = yearinfo.loc[yearinfo['profits_yoy2'] > 0]
-    yearinfo = yearinfo.drop_duplicates(subset=['code'], keep='first')
-
-    yearinfo.to_csv('D:\\yearinfo.csv')
-
-    stlist2 = list(np.array(yearinfo['code']))
-    combine = set(stlist) & set(stlist2)
-
-    needList = []
-    midinfo = np.array(midinfo[['code', 'profits_yoy3', 'profits_yoy2']])
-    for i in range(len(midinfo)):
-        if (midinfo[i, 0] in list(combine)):
-            if (midinfo[i, 1] >= midinfo[i, 2]):
-                needList.append(getstname(midinfo[i, 0]))
+    combine = set(list2) & set(list1)
+    print(combine)
 
 
+# getAllFiance()
 # Combine()
 
 
 def getCompanyInfo(stname):
     stname = int(stname.replace('st', ''))
-    midinfo = pd.read_csv('D:\\midinfo.csv')[
-        ['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1', 'eps_yoy3', 'eps_yoy2', 'eps_yoy1']]
-    yearinfo = pd.read_csv('D:\\yearinfo.csv')[
-        ['code', 'profits_yoy3', 'profits_yoy2', 'profits_yoy1', 'eps_yoy3', 'eps_yoy2', 'eps_yoy1']]
+    quart2 = pd.read_csv('D:\\quertinfo2.csv')[['code', 'eps3', 'eps2', 'eps1']]
+    quart1 = pd.read_csv('D:\\quertinfo1.csv')[['code', 'eps3', 'eps2', 'eps1']]
 
-    midinfo = midinfo.loc[midinfo['code'] == stname]
-    yearinfo = yearinfo.loc[yearinfo['code'] == stname]
+    quart2 = quart2.loc[quart2['code'] == stname]
+    quart1 = quart1.loc[quart1['code'] == stname]
 
-    midinfo = np.array(midinfo)
-    yearinfo = np.array(yearinfo)
-    mcontent = ""
-    yearcontent = ""
+    quart2 = np.array(quart2)
+    quart1 = np.array(quart1)
+
     meiguMid = ""
-    meiguYear = ""
+    oneMInfo = ""
 
     meiGuDecress = 0
     meiGuDecress2 = 0
-    if (len(midinfo) != 0):
-        mcontent = "中报 增长率:" + str(midinfo[0][1]) + "%  " + str(midinfo[0][2]) + "%  " + str(midinfo[0][3]) + "%"
-        meiguMid = "中报  每股收益率:" + str(midinfo[0][4]) + "%  " + str(midinfo[0][5]) + "%  " + str(midinfo[0][6]) + "%"
-        if (midinfo[0][4] < midinfo[0][5]):
+    zbsy = [-1, -1, -1]
+    if (len(quart2) != 0):
+        meiguMid = "中报  每股收益:" + str(round(quart2[0][1], 2)) + "  " + str(round(quart2[0][2], 2)) + "  " + str(
+            round(quart2[0][3], 2)) + " 近期增长:"+str(round((quart2[0][1]-quart2[0][2])/quart2[0][2]*100,2))+"% "+str(round((quart2[0][2]-quart2[0][3])/quart2[0][3]*100,2))+"%"
+        zbsy = [quart2[0][1], quart2[0][2], quart2[0][3]]
+        if (quart2[0][1] < quart2[0][2]):
             meiGuDecress = -1
-        if (midinfo[0][4] < -20):
-            print('!!!!!!!',stname,midinfo[0][4])
-            meiGuDecress2 = -5
-    if (len(yearinfo) != 0):
-        yearcontent += "  年报 增长率:" + str(yearinfo[0][1]) + "%  " + \
-                       str(yearinfo[0][2]) + "%  " + str(yearinfo[0][3]) + "%"
-        meiguYear += "  年报 每股收益率:" + str(yearinfo[0][4]) + "%  " + \
-                     str(yearinfo[0][5]) + "%  " + str(yearinfo[0][6]) + "%"
+    if (len(quart1) != 0):
+        oneMInfo += "  一季报 每股收益:" + str(round(quart1[0][1], 2)) + " " + str(round(quart1[0][2], 2)) + "  " + str(
+            round(quart1[0][3], 2))+ " 近期增长:"+str(round((quart1[0][1]-quart1[0][2])/quart1[0][2]*100,2))+"% "+str(round((quart1[0][2]-quart1[0][3])/quart1[0][3]*100,2))+"%"
 
-
-    return mcontent, yearcontent, meiguMid, meiguYear, meiGuDecress, meiGuDecress2
+    return meiguMid, oneMInfo, meiGuDecress, meiGuDecress2, zbsy
 
 
 '''
@@ -198,17 +188,19 @@ totalAssets,总资产(万)
 npr,净利润率(%)
    '''
 
+
 def getALLBaseInfo():
     allBase = ts.get_stock_basics()
 
     allBase.to_csv("D:\\allbase.csv")
 
+
 def getBaseInfo(stname):
     stname = int(stname.replace('st', ''))
-    alldata=pd.read_csv("D:\\allbase.csv")
+    alldata = pd.read_csv("D:\\allbase.csv")
     tempinfo = alldata.loc[alldata['code'] == stname]
-    tempinfo=tempinfo[['code','name','industry','area','outstanding','totals','totalAssets','npr']]
+    tempinfo = tempinfo[['code', 'name', 'industry', 'area', 'outstanding', 'totals', 'totalAssets', 'npr', 'esp']]
 
-    tempinfo=np.array(tempinfo)[0]
+    tempinfo = np.array(tempinfo)[0]
 
     return list(tempinfo)

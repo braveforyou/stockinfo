@@ -165,13 +165,17 @@ def getCompanyInfo(stname):
     zbsy = [-1, -1, -1]
     if (len(quart2) != 0):
         meiguMid = "中报  每股收益:" + str(round(quart2[0][1], 2)) + "  " + str(round(quart2[0][2], 2)) + "  " + str(
-            round(quart2[0][3], 2)) + " 近期增长:"+str(round((quart2[0][1]-quart2[0][2])/quart2[0][2]*100,2))+"% "+str(round((quart2[0][2]-quart2[0][3])/quart2[0][3]*100,2))+"%"
+            round(quart2[0][3], 2)) + " 近期增长:" + str(
+            round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)) + "% " + str(
+            round((quart2[0][2] - quart2[0][3]) / quart2[0][3] * 100, 2)) + "%"
         zbsy = [quart2[0][1], quart2[0][2], quart2[0][3]]
         if (quart2[0][1] < quart2[0][2]):
             meiGuDecress = -1
     if (len(quart1) != 0):
         oneMInfo += "  一季报 每股收益:" + str(round(quart1[0][1], 2)) + " " + str(round(quart1[0][2], 2)) + "  " + str(
-            round(quart1[0][3], 2))+ " 近期增长:"+str(round((quart1[0][1]-quart1[0][2])/quart1[0][2]*100,2))+"% "+str(round((quart1[0][2]-quart1[0][3])/quart1[0][3]*100,2))+"%"
+            round(quart1[0][3], 2)) + " 近期增长:" + str(
+            round((quart1[0][1] - quart1[0][2]) / quart1[0][2] * 100, 2)) + "% " + str(
+            round((quart1[0][2] - quart1[0][3]) / quart1[0][3] * 100, 2)) + "%"
 
     return meiguMid, oneMInfo, meiGuDecress, meiGuDecress2, zbsy
 
@@ -204,3 +208,30 @@ def getBaseInfo(stname):
     tempinfo = np.array(tempinfo)[0]
 
     return list(tempinfo)
+
+
+# getALLBaseInfo()
+import requests
+
+
+def getCompanyGonGao(stcode):
+
+    url = 'http://www.tou18.cn/gonggao/' + str(stcode)
+    headers = {
+        'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'}
+    reponse = requests.get(url)
+    reponse.encoding = 'GBK'
+    soup = BeautifulSoup(reponse.content)
+    test = soup.find_all('div', class_='table1')
+    result = []
+    count = 0
+    for k in test:
+        for item in k.find_all('tr'):
+            count += 1
+            if (count > 10): continue
+            temp = []
+            for inner in item:
+                temp.append(inner.text)
+            result.append(temp)
+    return result
+

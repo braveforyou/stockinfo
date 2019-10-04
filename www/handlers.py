@@ -62,6 +62,8 @@ def index(*, page='1'):
 
         if(zbsy[0]<0 and zbsy[0]!=-100):continue#进一季度的每股收益率
 
+
+
         sallaryPerSt = baseinfo[-1]  # 每股价格
         stname = info[i][1].replace('st', '')
         priceNow = pd.read_csv("D:\PythonTrain\stockListNow\\" + stname + ".csv")
@@ -70,13 +72,25 @@ def index(*, page='1'):
         priceNow = np.array(priceNow)[-1, 3]
 
         expectSallary100 = sallaryPerSt * 100 / priceNow
+        gonggao=company.getCompanyGonGao(stname)
+
+        jiejing=0
+        xianshou=-1
+        if(len(gonggao)>0):
+            for i in range(len(gonggao)):
+                if(gonggao[i][1].find('解禁')):
+                    jiejing=-1
+                if (gonggao[i][1].find('限售')):
+                    xianshou = -1
+        temp.append(jiejing)
+        temp.append(xianshou)
 
 
         tempdict['refuseInfo'] = temp
         tempdict['score'] = sum(temp)
         tempdict['baseinfo'] = baseinfo
         tempdict['expectSallary100'] = round(expectSallary100)
-
+        tempdict['reportInfo'] = gonggao
 
         tempdict['currentrise'] = round((priceNow - priceLatest) / priceLatest * 100, 2)
         tempdict['maxrise'] = round((priceMax - priceLatest) / priceLatest * 100, 2)

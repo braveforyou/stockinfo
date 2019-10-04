@@ -38,7 +38,7 @@ def inner(item):
         dataframe = pd.read_csv(filename)
 
         flag= filter.filterBad2(dataframe)
-        if (sum(flag)>-1 or True):
+        if (sum(flag)>-1):
             lock.acquire()  # 加锁
             needList.append(['st'+str(item),str(flag)])
             lock.release()

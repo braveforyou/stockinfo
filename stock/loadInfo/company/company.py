@@ -157,27 +157,26 @@ def getCompanyInfo(stname):
     quart2 = np.array(quart2)
     quart1 = np.array(quart1)
 
-    meiguMid = ""
-    oneMInfo = ""
+    每股中报收益详情 = ""
+    每股一季度报收益详情 = ""
 
-    meiGuDecress = 0
-    meiGuDecress2 = 0
-    zbsy = [-1, -1, -1]
+    中报每股收益下降 = 0#中保每股收益下降
+    中报收益各年 = [-1, -1, -1]
     if (len(quart2) != 0):
-        meiguMid = "中报  每股收益:" + str(round(quart2[0][1], 2)) + "  " + str(round(quart2[0][2], 2)) + "  " + str(
+        每股中报收益详情 = "中报  每股收益:" + str(round(quart2[0][1], 2)) + "  " + str(round(quart2[0][2], 2)) + "  " + str(
             round(quart2[0][3], 2)) + " 近期增长:" + str(
             round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)) + "% " + str(
             round((quart2[0][2] - quart2[0][3]) / quart2[0][3] * 100, 2)) + "%"
-        zbsy = [quart2[0][1], quart2[0][2], quart2[0][3]]
+        中报收益各年 = [quart2[0][1], quart2[0][2], quart2[0][3]]
         if (quart2[0][1] < quart2[0][2]):
-            meiGuDecress = -1
+            中报每股收益下降 = -1
     if (len(quart1) != 0):
-        oneMInfo += "  一季报 每股收益:" + str(round(quart1[0][1], 2)) + " " + str(round(quart1[0][2], 2)) + "  " + str(
+        每股一季度报收益详情 += "  一季报 每股收益:" + str(round(quart1[0][1], 2)) + " " + str(round(quart1[0][2], 2)) + "  " + str(
             round(quart1[0][3], 2)) + " 近期增长:" + str(
             round((quart1[0][1] - quart1[0][2]) / quart1[0][2] * 100, 2)) + "% " + str(
             round((quart1[0][2] - quart1[0][3]) / quart1[0][3] * 100, 2)) + "%"
 
-    return meiguMid, oneMInfo, meiGuDecress, meiGuDecress2, zbsy
+    return 每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年
 
 
 '''

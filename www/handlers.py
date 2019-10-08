@@ -58,19 +58,26 @@ def index(*, page='1'):
         tempdict = {}
         tempdict['name'] = str(info[i][1])
 
-        每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年 = company.getCompanyInfo(info[i][1])
+        每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年, 增速提高 = company.getCompanyInfo(info[i][1])
 
         tempdict['companyInfo_middleMeiGuReport'] = 每股中报收益详情
         tempdict['companyInfo_oneQuartMeiGuReport'] = 每股一季度报收益详情
 
         baseinfo = company.getBaseInfo(info[i][1])
+        stnamex = str(baseinfo[0])
+        if (len(stnamex) != 6):
+            for i in range(6 - len(stnamex)):
+                stnamex = '0' + stnamex
+            stnamex = 'sz' + stnamex
+        else:
+            stnamex = 'sh' + stnamex
 
-        tabelShow = info[i][2]
-        tabelShow = tabelShow.replace('[', '').replace(']', '')
-        tabelShow = tabelShow.split(',')
+        baseinfo[0]=stnamex
+
+        tabelShow = []
         tabelShow.append(中报每股收益下降)  # 每股收益下降w
         tabelShow = [float(x) for x in tabelShow]
-
+        tabelShow.append(增速提高)  # 每股收益下降w
         # if(中报收益各年[0]<0 and 中报收益各年[0]!=-100):continue#进一季度的每股收益率
 
         sallaryPerSt = baseinfo[-1]  # 每股价格

@@ -38,15 +38,16 @@ def initStParam(l, l2, l3, l4, l5):
 
 def inner(item):
     try:
-        # dataframe = expendFeature.process(item)
+        #dataframe = expendFeature.process(item)
         filename = "D:\PythonTrain\\stockListExpend\\" + str(item) + ".csv"
         dataframe = pd.read_csv(filename)
 
         flag = filter.filterBad2(dataframe)
 
-        if (sum(flag) > -1 ):
+        if (sum(flag) > -1):
             lock.acquire()  # 加锁
             needList.append(['st' + str(item), str(flag)])
             lock.release()
     except:
+        #raise
         1

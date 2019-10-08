@@ -18,7 +18,8 @@ def getinfo(stockname,His=False):
     # 时间 开盘 收盘  最高 最低 成交量
     startTime = '2016-02-01'
     if(His==False):
-        startTime='2019-01-01'
+        startTime='2019-04-01'
+        print(His)
     try:
         if(His==True):
             history.getHistoryFile(stockname,'D',startTime)

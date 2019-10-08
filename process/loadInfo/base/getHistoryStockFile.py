@@ -40,7 +40,7 @@ def getHistoryFile(code, type='D', startTime='2016-01-01',current=False):
         filename = "D:\PythonTrain\stockListNow\\" + str(code) + ".csv"
     data = data.sort_values(by="date", ascending=True)
 
-    if(len(np.array(closeData))<160):return
+    if(len(np.array(closeData))<60):return
 
     data.to_csv(filename)
     return

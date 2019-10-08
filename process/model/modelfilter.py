@@ -326,7 +326,6 @@ def tiejinDrecressV4(avg5, avg10, avg20, gap):
     return 0
 
 
-
 # 挑选
 def filter1Info(close, gap, avg10, avg20, avg5, pchange, open):
     flags = []
@@ -349,7 +348,7 @@ def filter1Info(close, gap, avg10, avg20, avg5, pchange, open):
     else:
         flags.append(0)
 
-    #纯加速上升通道
+    # 纯加速上升通道
     if (tiejinDrecressV3(close, avg5, avg10, avg20, gap) == 1):
         flags.append(-1)
     else:
@@ -360,6 +359,22 @@ def filter1Info(close, gap, avg10, avg20, avg5, pchange, open):
     else:
         flags.append(0)
 
+    return flags
+
+
+# 挑选最近回落或者横盘的來算
+def huiluoHenPan(close, gap, avg10, avg20, avg5, pchange, open):
+    flags = [-1]
+    temp = close[-6:]
+    max = np.max(temp)
+    min = np.min(temp)
+
+    # 窄幅震荡
+    if ((max - min) / min < 0.08):
+        flags[0] = 1
+    #在下跌，选择在调整状态的
+    if ((close[-1] - close[-5]) / close[-5] > -0.25 and (close[-1] - close[-5]) / close[-5] < -0.05):
+        flags[0] = 1
     return flags
 
 
@@ -478,8 +493,6 @@ def getLabelBestNew(gap, close, step=3):
     return labelorignal
 
 
-
-
 # 全部在线上  效果好 单独使用优于 haveLabel
 def filterBad2(datafm, gap=0):
     datafm = datafm[['close', 'oavg5', 'oavg10', 'oavg20', 'oavg30',
@@ -499,4 +512,4 @@ def filterBad2(datafm, gap=0):
     low = datafm[:, 9]
     open = datafm[:, 10]
 
-    return filter1Info(close, gap, avg10, avg20, avg5, pchange, open)
+    return huiluoHenPan(close, gap, avg10, avg20, avg5, pchange, open)

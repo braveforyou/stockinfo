@@ -162,12 +162,15 @@ def getCompanyInfo(stname):
 
     中报每股收益下降 = 0#中保每股收益下降
     中报收益各年 = [-1, -1, -1]
+    rise1=0
+    rise2=0
     if (len(quart2) != 0):
         每股中报收益详情 = "中报  每股收益:" + str(round(quart2[0][1], 2)) + "  " + str(round(quart2[0][2], 2)) + "  " + str(
             round(quart2[0][3], 2)) + " 近期增长:" + str(
             round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)) + "% " + str(
             round((quart2[0][2] - quart2[0][3]) / quart2[0][3] * 100, 2)) + "%"
         中报收益各年 = [quart2[0][1], quart2[0][2], quart2[0][3]]
+        rise2= round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)
         if (quart2[0][1] < quart2[0][2]):
             中报每股收益下降 = -1
     if (len(quart1) != 0):
@@ -175,8 +178,12 @@ def getCompanyInfo(stname):
             round(quart1[0][3], 2)) + " 近期增长:" + str(
             round((quart1[0][1] - quart1[0][2]) / quart1[0][2] * 100, 2)) + "% " + str(
             round((quart1[0][2] - quart1[0][3]) / quart1[0][3] * 100, 2)) + "%"
+        rise1 = round((quart1[0][1] - quart1[0][2]) / quart1[0][2] * 100, 2)
+    增速提高=0
+    if(len(quart2)>0 and len(quart1)>0):
+        增速提高=1 if rise2-rise1>0 else 0
 
-    return 每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年
+    return 每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年,增速提高
 
 
 '''
@@ -197,7 +204,7 @@ def getALLBaseInfo():
 
     allBase.to_csv("D:\\allbase.csv")
 
-
+#getALLBaseInfo()
 def getBaseInfo(stname):
     stname = int(stname.replace('st', ''))
     alldata = pd.read_csv("D:\\allbase.csv")
@@ -209,7 +216,7 @@ def getBaseInfo(stname):
     return list(tempinfo)
 
 
-# getALLBaseInfo()
+
 import requests
 
 

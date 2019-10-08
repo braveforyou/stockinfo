@@ -1,10 +1,5 @@
 import time
 
-'''
-定时任务
-'''
-
-
 def isrightTime(timeList):
     time_now = int(time.time())  # unix时间
     time_local = time.localtime(time_now)  # 转换为win_time

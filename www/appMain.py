@@ -3,8 +3,8 @@
 
 __author__ = 'Michael Liao'
 
-
 import logging;
+
 logging.basicConfig(level=logging.INFO)
 import asyncio, os, json, time
 from datetime import datetime
@@ -13,8 +13,10 @@ from jinja2 import Environment, FileSystemLoader
 from www.coroweb import add_routes, add_static
 import multiprocessing
 from multiprocessing import Lock, Manager
-from stock.loadAllStock import *
-import stock.model.consts as consts
+from process.loadAllStock import *
+import process.model.consts as consts
+
+
 def init_jinja2(app, **kw):
     logging.info('init jinja2...')
     options = dict(
@@ -49,6 +51,7 @@ def data_factory(app, handler):
                 request.__data__ = yield from request.post()
                 logging.info('request form: %s' % str(request.__data__))
         return (yield from handler(request))
+
     return parse_data
 
 
@@ -118,9 +121,8 @@ def init(loop):
     logging.info('server started at http://127.0.0.1:9000...')
     return srv
 
-import stock.loadHistoryOriginalBatch as loadHis
 
-#loadHis.process()#读取现有数据
+import process.loadHistoryOriginalBatch as loadHis
 
 if __name__ == '__main__':
     start = time.time()
@@ -131,18 +133,20 @@ if __name__ == '__main__':
     lock = Lock()
     needList = manager.list()
     filterContent = manager.list()
+    needLabel = manager.list()
+    filterLabel = manager.list()
     pool = multiprocessing.Pool(cpu_count, initializer=initStParam,
-                                initargs=(lock, needList, filterContent,))
+                                initargs=(lock, needList, filterContent, needLabel, filterLabel,))
     pool.map(inner, consts.needStockM)
     end = time.time()
     needList = np.array(needList)
 
-    saveInfo=pd.DataFrame(needList,columns=['stname','info'])
+
+    saveInfo = pd.DataFrame(needList, columns=['stname', 'info'])
     saveInfo.to_csv("D:\\needStList.csv")
-    print('init success:',(end-start))
+
+    print('init success:', (end - start))
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(init(loop))
     loop.run_forever()
-
-

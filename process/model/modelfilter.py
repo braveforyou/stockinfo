@@ -487,6 +487,7 @@ def filterBad2(datafm, gap=0):
 
     datafm = np.array(datafm)
     close = datafm[:, 0]
+
     avg5 = datafm[:, 1]
     avg10 = datafm[:, 2]
     avg20 = datafm[:, 3]

@@ -1,6 +1,6 @@
-import stock.loadInfo.base.getHistoryStockFile as history
+import process.loadInfo.base.getHistoryStockFile as history
 from multiprocessing.dummy import Pool as ThreadPool
-import stock.model.consts as consts
+import process.model.consts as consts
 
 SuccessList = []
 

@@ -7,7 +7,7 @@ type = sys.getfilesystemencoding()
 
 import tushare as ts
 from lxml import html
-import stock.baseinfo.HttpUtil as httpUtil
+import process.baseinfo.HttpUtil as httpUtil
 from bs4 import BeautifulSoup
 
 

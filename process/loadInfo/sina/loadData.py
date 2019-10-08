@@ -5,7 +5,7 @@ import numpy as np
 from pandas import DataFrame
 from multiprocessing.dummy import Pool as ThreadPool
 import datetime
-import stock.model.consts as consts
+import process.model.consts as consts
 
 
 # 获取历史信息

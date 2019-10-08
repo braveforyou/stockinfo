@@ -66,7 +66,7 @@ def getHistoryFile(code, begain=16, end=19):
     return
 
 
-import stock.model.consts as consts
+import process.model.consts as consts
 
 SuccessList = []
 

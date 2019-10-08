@@ -18,10 +18,6 @@ def yanghui(Step=3):
         return result
 
 
-
-
-
-
 def fib(max):
     n=1
     while n < max:

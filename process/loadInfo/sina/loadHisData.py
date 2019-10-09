@@ -5,7 +5,7 @@ import numpy as np
 from pandas import DataFrame
 from multiprocessing.dummy import Pool as ThreadPool
 import datetime
-import process.model.consts as consts
+import www.stList as consts
 
 
 # 获取历史信息
@@ -66,9 +66,7 @@ def getHistoryFile(code,begain=16, end=19 ):
 
 
 SuccessList = []
-
 countx=[0]
-
 def getinfo(stockname):
     # 时间 开盘 收盘  最高 最低 成交量
     try:

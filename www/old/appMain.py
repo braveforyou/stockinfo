@@ -6,15 +6,15 @@ __author__ = 'Michael Liao'
 import logging;
 
 logging.basicConfig(level=logging.INFO)
-import asyncio, os, json, time
+import asyncio, os, json
 from datetime import datetime
 from aiohttp import web
 from jinja2 import Environment, FileSystemLoader
-from www.coroweb import add_routes, add_static
+from www.old.coroweb import add_routes, add_static
 import multiprocessing
 from multiprocessing import Lock, Manager
-from process.loadAllStock import *
-import process.model.consts as consts
+from process.services.loadAllStock import *
+import www.stList as consts
 
 
 def init_jinja2(app, **kw):
@@ -121,8 +121,6 @@ def init(loop):
     logging.info('server started at http://127.0.0.1:9000...')
     return srv
 
-
-import process.loadHistoryOriginalBatch as loadHis
 
 if __name__ == '__main__':
     start = time.time()

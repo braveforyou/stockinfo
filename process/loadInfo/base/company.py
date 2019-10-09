@@ -1,14 +1,11 @@
 # coding=utf-8
-from html.parser import HTMLParser
 
-import sys
-
-type = sys.getfilesystemencoding()
 
 import tushare as ts
-from lxml import html
-import process.baseinfo.HttpUtil as httpUtil
 from bs4 import BeautifulSoup
+import numpy as np
+import pandas as pd
+import requests
 
 
 def analysis(sallary):
@@ -52,22 +49,6 @@ def getAllFiance():
     report12.to_csv('D:\\20161.csv')
     return
 
-
-'''
-code,代码
-name,名称
-esp,每股收益
-eps_yoy,每股收益同比(%)
-bvps,每股净资产
-roe,净资产收益率(%)
-epcf,每股现金流量(元)
-net_profits,净利润(万元)
-profits_yoy,净利润同比(%)
-distrib,分配方案
-report_date,发布日期
-'''
-import numpy as np
-import pandas as pd
 
 
 def getstname(st):
@@ -141,10 +122,8 @@ def Combine():
     combine = set(list2) & set(list1)
     print(combine)
 
-
 # getAllFiance()
 # Combine()
-
 
 def getCompanyInfo(stname):
     stname = int(stname.replace('st', ''))
@@ -186,19 +165,6 @@ def getCompanyInfo(stname):
     return 每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年,增速提高
 
 
-'''
-code,代码
-name,名称
-industry,所属行业
-area,地区
-pe,市盈率
-outstanding,流通股本(亿)
-totals,总股本(亿)
-totalAssets,总资产(万)
-npr,净利润率(%)
-   '''
-
-
 def getALLBaseInfo():
     allBase = ts.get_stock_basics()
 
@@ -214,10 +180,6 @@ def getBaseInfo(stname):
     tempinfo = np.array(tempinfo)[0]
 
     return list(tempinfo)
-
-
-
-import requests
 
 
 def getCompanyGonGao(stcode):
@@ -241,3 +203,37 @@ def getCompanyGonGao(stcode):
             result.append(temp)
     return result
 
+
+
+
+
+
+
+
+
+
+'''
+code,代码
+name,名称
+esp,每股收益
+eps_yoy,每股收益同比(%)
+bvps,每股净资产
+roe,净资产收益率(%)
+epcf,每股现金流量(元)
+net_profits,净利润(万元)
+profits_yoy,净利润同比(%)
+distrib,分配方案
+report_date,发布日期
+'''
+
+'''
+code,代码
+name,名称
+industry,所属行业
+area,地区
+pe,市盈率
+outstanding,流通股本(亿)
+totals,总股本(亿)
+totalAssets,总资产(万)
+npr,净利润率(%)
+   '''

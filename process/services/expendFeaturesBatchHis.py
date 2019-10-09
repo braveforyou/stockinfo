@@ -1,5 +1,5 @@
 
-from process.model.base.MACD import *
+from process.model.MACD import *
 
 def getData(stname,His=False):
     column = ['date', 'open', 'high', 'close', 'low', 'volume', 'price_change', 'p_change', 'ma5', 'ma10', 'ma20',

@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-__author__ = 'Michael Liao'
+__author__ = 'zhiting yu'
 
 import logging;
 import multiprocessing
 from multiprocessing import Lock, Manager
-from process.loadAllStock import *
-import process.model.consts as consts
-import process.loadHistoryOriginalBatch as loadHis
+from process.services.loadAllStock import *
+import www.stList as consts
 from www.handlers import *
 from flask import Flask, render_template, redirect, url_for, request, make_response, session, flash
-from datetime import datetime, timedelta
+from datetime import timedelta
 import os
 from flask_restful import Api
 import www.handlers as handlers
@@ -47,11 +46,10 @@ def login():
 
 
 @app.route('/')
-def hello_world():
+def pageIndex():
     # loadHis.process()  # 读取现有数据
     manager = Manager()
     cpu_count = multiprocessing.cpu_count()
-    print('Cpu count:', cpu_count)
     lock = Lock()
     needList = manager.list()
     filterContent = manager.list()
@@ -60,9 +58,7 @@ def hello_world():
     pool = multiprocessing.Pool(cpu_count, initializer=initStParam,
                                 initargs=(lock, needList, filterContent, needLabel, filterLabel,))
     pool.map(inner, consts.needStockM)
-
     needList = np.array(needList)
-
     saveInfo = pd.DataFrame(needList, columns=['stname', 'info'])
     saveInfo.to_csv("D:\\needStList.csv")
     return render_template('login.html')
@@ -70,7 +66,6 @@ def hello_world():
 
 @app.route('/sample', methods=['POST', 'GET'])
 def getHandler():
-    print(session.get('username'))
     blog = index()
     return render_template('stockinfo.html', page=blog['page'], blogs=blog['blogs'])
 

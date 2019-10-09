@@ -16,3 +16,6 @@ configs = {
         'secret': 'Awesome'
     }
 }
+
+
+debug=True

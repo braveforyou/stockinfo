@@ -15,7 +15,8 @@
         {% for blog in blogs %}
             <article class="uk-article">
                 <h2>
-                    <a href="http://finance.sina.com.cn/realstock/company/{{ blog.baseinfo[0] }}/nc.shtml" target="_blank">{{ blog.baseinfo[1] }}({{ blog.baseinfo[0] }})-- {{ blog.baseinfo[2] }}--{{ blog.currentPrice }}</a>
+                    <a href="http://finance.sina.com.cn/realstock/company/{{ blog.baseinfo[0] }}/nc.shtml" target="_blank">
+                        {{ blog.baseinfo[1] }}({{ blog.baseinfo[0] }})-- {{ blog.baseinfo[2] }}--{{ blog.currentPrice }}</a>
                 </h2>
 
                 <p>流通股本:{{ blog.baseinfo[4] }} (亿) 总股本 {{ blog.baseinfo[5] }} (亿) </p>
@@ -48,7 +49,6 @@
                     </tr>
 
                 </table>
-
 
             </article>
             <hr class="uk-article-divider">

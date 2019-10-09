@@ -6,68 +6,27 @@ from bs4 import BeautifulSoup
 import numpy as np
 import pandas as pd
 import requests
+import www.config_default as config
 
 
-def analysis(sallary):
-    riseAll = []
-    for i in range(4):
-        rise1 = (sallary[i] - sallary[i + 4]) / sallary[i + 4] * 100
-        rise2 = (sallary[i + 4] - sallary[i + 8]) / sallary[i + 8] * 100
-        rise3 = (sallary[i + 8] - sallary[i + 12]) / sallary[i + 12] * 100
-        riseAll.append([round(rise1, 2), round(rise2, 2), round(rise3, 2)])
-    return riseAll
 
 
-def getAllFiance():
-    report1 = ts.get_report_data(2019, 2)
-    report1.to_csv('D:\\20192.csv')
-    report2 = ts.get_report_data(2019, 1)
-    report2.to_csv('D:\\20191.csv')
-    report3 = ts.get_report_data(2018, 4)
-    report3.to_csv('D:\\20184.csv')
-    report4 = ts.get_report_data(2018, 3)
-    report4.to_csv('D:\\20183.csv')
-    report5 = ts.get_report_data(2018, 2)
-    report5.to_csv('D:\\20182.csv')
-    report6 = ts.get_report_data(2018, 1)
-    report6.to_csv('D:\\20181.csv')
-    report7 = ts.get_report_data(2017, 4)
-    report7.to_csv('D:\\20174.csv')
-    report8 = ts.get_report_data(2017, 3)
-    report8.to_csv('D:\\20173.csv')
-    report9 = ts.get_report_data(2017, 2)
-    report9.to_csv('D:\\20172.csv')
-    report10 = ts.get_report_data(2017, 1)
-    report10.to_csv('D:\\20171.csv')
-    report11 = ts.get_report_data(2016, 4)
-    report11.to_csv('D:\\20164.csv')
-    report12 = ts.get_report_data(2016, 3)
-    report12.to_csv('D:\\20163.csv')
-    report12 = ts.get_report_data(2016, 2)
-    report12.to_csv('D:\\20162.csv')
-    report12 = ts.get_report_data(2016, 1)
-    report12.to_csv('D:\\20161.csv')
+
+''' 获取业绩报表数据 '''
+def getAllFianceReport():
+    needFinaceMonth = [[2019, 2], [2019, 1],
+                       [2018, 4], [2018, 3], [2018, 2], [2018, 1],
+                       [2017, 4], [2017, 3], [2017, 2], [2017, 1],
+                       [2016, 4], [2016, 3], [2016, 2], [2016, 1]]
+    for i in range(len(needFinaceMonth)):
+        filename = "D:\\" + str(needFinaceMonth[i]) + str(needFinaceMonth[i][1]) + ".csv"
+        report1 = ts.get_report_data(2019, 2)
+        report1.to_csv(filename)
     return
 
 
-
-def getstname(st):
-    st = int(st)
-    st = str(st)
-    if (len(st) == 1):
-        st = '00000' + st
-    elif (len(st) == 2):
-        st = '0000' + st
-    elif (len(st) == 3):
-        st = '000' + st
-    elif (len(st) == 4):
-        st = '00' + st
-    elif (len(st) == 5):
-        st = '0' + st
-    return st
-
-
-# file3, file2, file1, 为当前周期， file32='', file22='', file12='' 为前者的前一周其，对于除第一周期外，需要得到当周期的实际数值就需要减去上一周其
+# file3, file2, file1, 为当前周期， file32='', file22='', file12=''
+# 为前者的前一周其，对于除第一周期外，需要得到当周期的实际数值就需要减去上一周其
 def analysisQuart(file3, file2, file1, file32='', file22='', file12='', quart=1):
     data3 = pd.read_csv(file3)[['code', 'eps']]
     data2 = pd.read_csv(file2)[['code', 'eps']]
@@ -100,7 +59,6 @@ def analysisQuart(file3, file2, file1, file32='', file22='', file12='', quart=1)
     if (len(midinfo2) != 0):
         midinfo2 = np.array(midinfo2)
         midinfo = np.array(midinfo)
-        print(len(midinfo), '---', len(midinfo2))
         for i in range(len(midinfo)):
             midinfo[i, 1] = midinfo[i, 1] - midinfo2[i, 1]
             midinfo[i, 2] = midinfo[i, 2] - midinfo2[i, 2]
@@ -109,7 +67,7 @@ def analysisQuart(file3, file2, file1, file32='', file22='', file12='', quart=1)
     midinfo.to_csv('D:\\quertinfo' + str(quart) + '.csv')
     return list(np.array(midinfo['code']))
 
-
+'''获取不同季度的信息的环比分析 '''
 def Combine():
     list4 = analysisQuart('D:\\20184.csv', 'D:\\20174.csv', 'D:\\20164.csv', 'D:\\20183.csv', 'D:\\20173.csv',
                           'D:\\20163.csv', 4)
@@ -120,10 +78,8 @@ def Combine():
     list1 = analysisQuart('D:\\20191.csv', 'D:\\20181.csv', 'D:\\20171.csv', 1)
 
     combine = set(list2) & set(list1)
-    print(combine)
+    return combine
 
-# getAllFiance()
-# Combine()
 
 def getCompanyInfo(stname):
     stname = int(stname.replace('st', ''))
@@ -139,17 +95,17 @@ def getCompanyInfo(stname):
     每股中报收益详情 = ""
     每股一季度报收益详情 = ""
 
-    中报每股收益下降 = 0#中保每股收益下降
+    中报每股收益下降 = 0  # 中保每股收益下降
     中报收益各年 = [-1, -1, -1]
-    rise1=0
-    rise2=0
+    rise1 = 0
+    rise2 = 0
     if (len(quart2) != 0):
         每股中报收益详情 = "中报  每股收益:" + str(round(quart2[0][1], 2)) + "  " + str(round(quart2[0][2], 2)) + "  " + str(
             round(quart2[0][3], 2)) + " 近期增长:" + str(
             round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)) + "% " + str(
             round((quart2[0][2] - quart2[0][3]) / quart2[0][3] * 100, 2)) + "%"
         中报收益各年 = [quart2[0][1], quart2[0][2], quart2[0][3]]
-        rise2= round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)
+        rise2 = round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)
         if (quart2[0][1] < quart2[0][2]):
             中报每股收益下降 = -1
     if (len(quart1) != 0):
@@ -158,32 +114,29 @@ def getCompanyInfo(stname):
             round((quart1[0][1] - quart1[0][2]) / quart1[0][2] * 100, 2)) + "% " + str(
             round((quart1[0][2] - quart1[0][3]) / quart1[0][3] * 100, 2)) + "%"
         rise1 = round((quart1[0][1] - quart1[0][2]) / quart1[0][2] * 100, 2)
-    增速提高=0
-    if(len(quart2)>0 and len(quart1)>0):
-        增速提高=1 if rise2-rise1>0 else 0
+    增速提高 = 0
+    if (len(quart2) > 0 and len(quart1) > 0):
+        增速提高 = 1 if rise2 - rise1 > 0 else 0
 
-    return 每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年,增速提高
+    return 每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年, 增速提高
 
-
+#    获取沪深上市公司基本情况
 def getALLBaseInfo():
     allBase = ts.get_stock_basics()
-
     allBase.to_csv("D:\\allbase.csv")
 
-#getALLBaseInfo()
+
+
 def getBaseInfo(stname):
     stname = int(stname.replace('st', ''))
     alldata = pd.read_csv("D:\\allbase.csv")
     tempinfo = alldata.loc[alldata['code'] == stname]
     tempinfo = tempinfo[['code', 'name', 'industry', 'area', 'outstanding', 'totals', 'totalAssets', 'npr', 'esp']]
-
     tempinfo = np.array(tempinfo)[0]
-
     return list(tempinfo)
 
 
 def getCompanyGonGao(stcode):
-
     url = 'http://www.tou18.cn/gonggao/' + str(stcode)
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'}
@@ -205,35 +158,7 @@ def getCompanyGonGao(stcode):
 
 
 
-
-
-
-
-
-
-
-'''
-code,代码
-name,名称
-esp,每股收益
-eps_yoy,每股收益同比(%)
-bvps,每股净资产
-roe,净资产收益率(%)
-epcf,每股现金流量(元)
-net_profits,净利润(万元)
-profits_yoy,净利润同比(%)
-distrib,分配方案
-report_date,发布日期
-'''
-
-'''
-code,代码
-name,名称
-industry,所属行业
-area,地区
-pe,市盈率
-outstanding,流通股本(亿)
-totals,总股本(亿)
-totalAssets,总资产(万)
-npr,净利润率(%)
-   '''
+if(config.init):
+    getAllFianceReport()
+    Combine()
+    getALLBaseInfo()

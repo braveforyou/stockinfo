@@ -2,7 +2,22 @@ import process.loadInfo.base.company as company
 import pandas as pd
 import numpy as np
 
+
+
+def initStParam(l, l2, l3,l4):
+    global lock
+    global listFilter
+    global listNeed
+    global contents
+    lock = l
+    listFilter = l2
+    listNeed = l3
+    contents=l4
+
+
+
 def analysisInner(stname):
+    stname=stname[1]
     tempdict = {}
     tempdict['name'] = str(stname)
 
@@ -65,8 +80,9 @@ def analysisInner(stname):
 
     needflag = True
     if (中报收益各年[0] < 0 and 中报收益各年[0] != -100 or tempdict['currentrise'] < 10):
-        1
+        listNeed.append(stname)
+        contents.append(tempdict)
     else:
-        needflag = False
-
+        needflag=False
+        listFilter.append(stname)
     return tempdict, needflag

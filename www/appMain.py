@@ -66,7 +66,7 @@ def pageIndex():
 
 @app.route('/sample', methods=['POST', 'GET'])
 def getHandler():
-    blog = index()
+    blog = indexParrel()
     return render_template('stockinfo.html', page=blog['page'], blogs=blog['blogs'])
 
 

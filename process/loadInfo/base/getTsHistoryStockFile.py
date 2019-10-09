@@ -2,6 +2,7 @@ import tushare as ts
 import datetime
 import pandas as pd
 import numpy as np
+
 # 获取时间段内的历史记录
 '''
     date：日期
@@ -24,10 +25,8 @@ column = ['date', 'open', 'high', 'close', 'low', 'volumn', ' p_chang', 'ma5', '
           'v_ma20']
 
 
-
-
 # 获取得数据不完整
-def getHistoryFile(code, type='D', startTime='2016-01-01',current=False):
+def getHistoryFile(code, type='D', startTime='2016-01-01', current=False):
     now_time = datetime.datetime.now()
     data = ts.get_hist_data(code, start=startTime, end=now_time.strftime('%Y-%m-%d'), ktype=type)
     closeData = np.array(data['close'])
@@ -40,7 +39,6 @@ def getHistoryFile(code, type='D', startTime='2016-01-01',current=False):
         filename = "D:\PythonTrain\stockListNow\\" + str(code) + ".csv"
     data = data.sort_values(by="date", ascending=True)
 
-    if(len(np.array(closeData))<60):return
-
+    if (len(np.array(closeData)) == 0): return
     data.to_csv(filename)
     return

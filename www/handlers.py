@@ -11,8 +11,11 @@ from flask_restful import Resource, reqparse
 from www.response_vo import ResponseVo
 from process.utils.TimeCostAnnotation import *
 import process.services.stAnslysisService as stService
-parser = reqparse.RequestParser()
+import multiprocessing
+from multiprocessing import Lock, Manager
 import json
+
+parser = reqparse.RequestParser()
 
 '''
 首先排序
@@ -26,46 +29,43 @@ import json
 
 
 class Rest(Resource):
-    # get提交时的处理方法
+
     def post(self):
-        result = index()
+        result = indexParrel()
         json.dumps(obj=result)
         resp_vo = ResponseVo(success=True, data=result)
         return resp_vo.to_vo()
 
-    # post提交时的处理方法
     def get(self):
         result = {}
-        # 此种方法即可解析通过普通post提交也可解析json格式提交
-        args = parser.parse_args()
-        result["method"] = "post"
-        result["q"] = args["q"]
+        1
         return result
 
 
+
+
 @timerCost()
-def index():
+def indexParrel():
     num = 1
     page = Page(num)
 
     info = pd.read_csv("D:\\needStList.csv")
     info = np.array(info)
 
-    content = []
-    listNeed = []
-    listFilter = []
-    for i in range(len(info)):
-        tempdict, needflag = stService.analysisInner(info[i][1])
-        if (needflag == False):
-            listFilter.append(tempdict['currentrise'])
-            continue
-        else:
-            listNeed.append(tempdict['currentrise'])
-        content.append(tempdict)
-    print('need:', np.mean(listNeed), np.max(listNeed), np.min(listNeed), np.median(listNeed))
-    print('filter:', np.mean(listFilter), np.max(listFilter), np.min(listFilter), np.median(listFilter))
+
+    manager = Manager()
+    cpu_count = multiprocessing.cpu_count()
+    lock = Lock()
+    listFilter = manager.list()
+    listNeed = manager.list()
+    contents= manager.list()
+
+    pool = multiprocessing.Pool(cpu_count, initializer=stService.initStParam,
+                                initargs=(lock, listFilter, listNeed,contents,))
+    pool.map(stService.analysisInner, info)
+
 
     return {
         'page': page,
-        'blogs': content
+        'blogs': contents
     }

@@ -8,3 +8,11 @@ def getstname(st):
     return name
 
 
+def getStnameSH(stnamex):
+    if (len(stnamex) != 6):
+        for i in range(6 - len(stnamex)):
+            stnamex = '0' + stnamex
+        stnamex = 'sz' + stnamex
+    else:
+        stnamex = 'sh' + stnamex
+    return stnamex

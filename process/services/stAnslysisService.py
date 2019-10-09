@@ -14,6 +14,7 @@ def initStParam(l, l2, l3,l4):
     listNeed = l3
     contents=l4
 
+import process.utils.format as format
 
 
 def analysisInner(stname):
@@ -27,21 +28,13 @@ def analysisInner(stname):
     tempdict['companyInfo_oneQuartMeiGuReport'] = 每股一季度报收益详情
 
     baseinfo = company.getBaseInfo(stname)
-    stnamex = str(baseinfo[0])
-    if (len(stnamex) != 6):
-        for i in range(6 - len(stnamex)):
-            stnamex = '0' + stnamex
-        stnamex = 'sz' + stnamex
-    else:
-        stnamex = 'sh' + stnamex
-
-    baseinfo[0] = stnamex
+    baseinfo[0] = format.getStnameSH(str(baseinfo[0]))
 
     tabelShow = []
     tabelShow.append(中报每股收益下降)  # 每股收益下降w
     tabelShow = [float(x) for x in tabelShow]
     tabelShow.append(增速提高)  # 每股收益下降w
-    # if(中报收益各年[0]<0 and 中报收益各年[0]!=-100):continue#进一季度的每股收益率
+
 
     sallaryPerSt = baseinfo[-1]  # 每股价格
     stname = stname.replace('st', '')

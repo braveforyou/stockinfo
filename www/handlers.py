@@ -38,11 +38,22 @@ class Rest(Resource):
 
     def get(self):
         result = {}
-        1
         return result
 
 
 
+
+def sort(content):
+    tempList=[]
+    for i in range(len(content)):
+        tempList.append([content[i]['score'],i])
+    tempList.sort(key=(lambda x:x[0]),reverse=True)
+    index=np.array(tempList)[:,1]
+    result=[]
+    for x in index:
+        result.append(content[int(x)])
+
+    return result
 
 @timerCost()
 def indexParrel():
@@ -63,7 +74,7 @@ def indexParrel():
     pool = multiprocessing.Pool(cpu_count, initializer=stService.initStParam,
                                 initargs=(lock, listFilter, listNeed,contents,))
     pool.map(stService.analysisInner, info)
-
+    contents=sort(contents)
 
     return {
         'page': page,

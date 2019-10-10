@@ -14,5 +14,8 @@ def getStnameSH(stnamex):
             stnamex = '0' + stnamex
         stnamex = 'sz' + stnamex
     else:
-        stnamex = 'sh' + stnamex
+        if(str(stnamex[0])=='6'):
+            stnamex = 'sh' + stnamex
+        else:
+            stnamex = 'sz' + stnamex
     return stnamex

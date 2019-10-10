@@ -19,7 +19,7 @@ def getAllFianceReport():
                        [2017, 4], [2017, 3], [2017, 2], [2017, 1],
                        [2016, 4], [2016, 3], [2016, 2], [2016, 1]]
     for i in range(len(needFinaceMonth)):
-        filename = "D:\\" + str(needFinaceMonth[i]) + str(needFinaceMonth[i][1]) + ".csv"
+        filename = "D:\\" + str(needFinaceMonth[i][0]) + str(needFinaceMonth[i][1]) + ".csv"
         report1 = ts.get_report_data(2019, 2)
         report1.to_csv(filename)
     return

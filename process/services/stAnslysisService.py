@@ -3,8 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-
-def initStParam(l, l2, l3,l4):
+def initStParam(l, l2, l3, l4):
     global lock
     global listFilter
     global listNeed
@@ -12,13 +11,14 @@ def initStParam(l, l2, l3,l4):
     lock = l
     listFilter = l2
     listNeed = l3
-    contents=l4
+    contents = l4
+
 
 import process.utils.format as format
 
 
 def analysisInner(stname):
-    stname=stname[1]
+    stname = stname[1]
     tempdict = {}
     tempdict['name'] = str(stname)
 
@@ -35,7 +35,6 @@ def analysisInner(stname):
     tabelShow = [float(x) for x in tabelShow]
     tabelShow.append(增速提高)  # 每股收益下降w
 
-
     sallaryPerSt = baseinfo[-1]  # 每股价格
     stname = stname.replace('st', '')
     priceNow = pd.read_csv("D:\PythonTrain\stockListNow\\" + stname + ".csv")
@@ -51,11 +50,11 @@ def analysisInner(stname):
     zengchi = 0
     if (len(gonggao) > 0):
         for i in range(len(gonggao)):
-            if (gonggao[i][1].find('解禁')):
+            if (gonggao[i][1].find('解禁') != -1):
                 jiejing = -1
-            if (gonggao[i][1].find('限售')):
+            if (gonggao[i][1].find('限售') != -1):
                 xianshou = -1
-            if (gonggao[i][1].find('增持')):
+            if (gonggao[i][1].find('增持') != -1):
                 zengchi = 1
     tabelShow.append(jiejing)  # 解禁
     tabelShow.append(xianshou)  # 限售
@@ -73,9 +72,9 @@ def analysisInner(stname):
 
     needflag = True
     if (中报收益各年[0] < 0 and 中报收益各年[0] != -100 or tempdict['currentrise'] < 10):
+        needflag = False
+        listFilter.append(stname)
+    else:
         listNeed.append(stname)
         contents.append(tempdict)
-    else:
-        needflag=False
-        listFilter.append(stname)
     return tempdict, needflag

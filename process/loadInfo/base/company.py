@@ -158,6 +158,11 @@ def getCompanyGonGao(stcode):
 
 
 
+def getRonzi(stcode):
+    url='http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/rzrq/index.phtml?symbol=sh600702&bdate=2019-01-01&edate=2019-10-15'
+
+
+
 if(config.init):
     getAllFianceReport()
     Combine()

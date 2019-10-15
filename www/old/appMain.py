@@ -122,9 +122,17 @@ def init(loop):
     return srv
 
 
+import process.services.loadHistoryOriginalBatch as loadHis
+import www.config_default as config
+
+import numpy as np
+
 if __name__ == '__main__':
     start = time.time()
-    # loadHis.process()  # 读取现有数据
+
+    if (config.debug == False):
+        loadHis.process()
+
     manager = Manager()
     cpu_count = multiprocessing.cpu_count()
     print('Cpu count:', cpu_count)
@@ -138,7 +146,6 @@ if __name__ == '__main__':
     pool.map(inner, consts.needStockM)
     end = time.time()
     needList = np.array(needList)
-
 
     saveInfo = pd.DataFrame(needList, columns=['stname', 'info'])
     saveInfo.to_csv("D:\\needStList.csv")

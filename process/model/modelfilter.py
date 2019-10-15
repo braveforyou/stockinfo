@@ -372,10 +372,44 @@ def huiluoHenPan(close, gap, avg10, avg20, avg5, pchange, open):
     # 窄幅震荡
     if ((max - min) / min < 0.08):
         flags[0] = 1
-    #在下跌，选择在调整状态的
+    # 在下跌，选择在调整状态的
     if ((close[-1] - close[-5]) / close[-5] > -0.25 and (close[-1] - close[-5]) / close[-5] < -0.05):
         flags[0] = 1
+
     return flags
+
+
+# 5下交叉10 均在20以上，且量下降，可等待买入
+def decressAdjust(avg5, avg10, avg20, close, volume, avg30):
+    gap = -1
+    volumeNear = np.mean(volume[gap - 10:gap])
+    volumeFar = np.mean(volume[gap - 14:gap - 4])
+
+    avg30riseNear = np.mean(avg30[gap - 10:gap])
+    avg30riseFar = np.mean(avg30[gap - 14:gap - 4])
+
+    avg20riseNear = np.mean(avg20[gap - 10:gap])
+    avg20riseFar = np.mean(avg20[gap - 14:gap - 4])
+
+    above520 = False
+
+    if (avg5[gap] > avg20[gap] and avg5[gap - 1] > avg20[gap - 1] and avg5[gap - 2] > avg20[gap - 2]):
+        above520 = True
+
+    if ((avg5[gap] - avg5[gap - 5]) / avg5[gap - 5] <= 0.05): return 0  # 在爬升
+
+    avg5Decress = True if np.mean(avg5[gap - 5:gap]) < np.mean(avg5[gap - 8:gap - 2]) else False  # 曲线上升为好
+
+    decress = True if (volumeNear < volumeFar) else False
+    if (decress == True and avg5[gap] > avg5[gap - 1] and above520 == True and avg5Decress == False
+            and (avg10[gap] > avg20[gap])
+            and (avg30riseFar < avg30riseNear or avg20riseNear > avg20riseFar)):
+        return 1
+    if (decress == True and close[gap] > avg5[gap] and above520 == True and avg5Decress == False
+            and (avg10[gap] > avg20[gap])
+            and (avg30riseFar < avg30riseNear or avg20riseNear > avg20riseFar)):
+        return 1
+    return -1
 
 
 # 自定义退出
@@ -493,6 +527,42 @@ def getLabelBestNew(gap, close, step=3):
     return labelorignal
 
 
+# line1 交叉line2 得近似方法
+def isjiaocha(line1, line2):
+    lineLen = len(line1)
+    existlow = [1 for i in range(int(lineLen / 2)) if line1[i] < line2[i]]
+    existRise = [1 for i in range(lineLen) if i >= lineLen / 2 and line1[i] > line2[i]]
+    if (len(existlow) > 0 and len(existRise) > 0):
+        return 1
+    return 0
+
+
+# 近五日内发生多次交叉，或者上扬
+def jiaochaBegain(avg5, avg10, avg20, avg30, gap, range=6):
+    print(avg5)
+    if (gap - range + len(avg5) < 0): return -1
+
+    avg5 = avg5[gap - range:gap]
+    avg10 = avg10[gap - range:gap]
+    avg20 = avg20[gap - range:gap]
+    avg30 = avg30[gap - range:gap]
+
+    jiaocha510 = isjiaocha(avg5, avg10)
+    jiaocha520 = isjiaocha(avg5, avg20)
+    jiaocha530 = isjiaocha(avg5, avg30)
+    jiaocha1020 = isjiaocha(avg10, avg20)
+    jiaocha1030 = isjiaocha(avg10, avg30)
+    jiaocha2030 = isjiaocha(avg20, avg30)
+
+
+    riseLimit = True if (avg5[-1] - avg5[- range]) / avg5[- range] < 0.08 and (avg5[-1] - avg5[- 3]) / avg5[- 3] > 0.02 else False
+
+    if (riseLimit and jiaocha510 + jiaocha530 + jiaocha520 + jiaocha1020 + jiaocha1030 + jiaocha2030 >= 3):
+        return 1
+
+    return 0
+
+
 # 全部在线上  效果好 单独使用优于 haveLabel
 def filterBad2(datafm, gap=0):
     datafm = datafm[['close', 'oavg5', 'oavg10', 'oavg20', 'oavg30',
@@ -502,6 +572,7 @@ def filterBad2(datafm, gap=0):
     close = datafm[:, 0]
 
     avg5 = datafm[:, 1]
+    print(avg5)
     avg10 = datafm[:, 2]
     avg20 = datafm[:, 3]
     avg30 = datafm[:, 4]
@@ -512,4 +583,29 @@ def filterBad2(datafm, gap=0):
     low = datafm[:, 9]
     open = datafm[:, 10]
 
-    return huiluoHenPan(close, gap, avg10, avg20, avg5, pchange, open)
+    result=[]
+    try:
+        flag = decressAdjust(avg5, avg10, avg20, close, volume, avg30)
+        result.append(flag)
+    except:
+        1
+    try:
+        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap,5)
+        result.append(flag)
+    except:
+        1
+    try:
+        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap,4)
+        result.append(flag)
+    except:
+        1
+    try:
+        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap,3)
+        result.append(flag)
+    except:
+        raise
+        1
+    if(sum(result)>=1):
+        return [1]
+    return [0]
+

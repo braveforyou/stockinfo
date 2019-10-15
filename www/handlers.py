@@ -59,10 +59,10 @@ def sort(content):
 def indexParrel():
     num = 1
     page = Page(num)
-
     info = pd.read_csv("D:\\needStList.csv")
     info = np.array(info)
 
+    print(info)
 
     manager = Manager()
     cpu_count = multiprocessing.cpu_count()

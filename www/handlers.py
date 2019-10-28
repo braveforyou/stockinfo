@@ -62,8 +62,6 @@ def indexParrel():
     info = pd.read_csv("D:\\needStList.csv")
     info = np.array(info)
 
-    print(info)
-
     manager = Manager()
     cpu_count = multiprocessing.cpu_count()
     lock = Lock()
@@ -80,3 +78,17 @@ def indexParrel():
         'page': page,
         'blogs': contents
     }
+
+
+
+
+
+@timerCost()
+def stSingle(stname):
+    print(stname)
+    stinfo=stService.analysisInnerInfo(stname)
+
+    return {
+        'stinfo': stinfo
+    }
+

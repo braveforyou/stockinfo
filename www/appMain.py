@@ -62,7 +62,6 @@ def pageIndex():
     if(len(needList)==0):
         needList=[['300193',[1]]]
     saveInfo = pd.DataFrame(needList, columns=['stname', 'info'])
-    print(saveInfo)
     saveInfo.to_csv("D:\\needStList.csv")
     return render_template('login.html')
 

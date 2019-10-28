@@ -539,7 +539,7 @@ def isjiaocha(line1, line2):
 
 # 近五日内发生多次交叉，或者上扬
 def jiaochaBegain(avg5, avg10, avg20, avg30, gap, range=6):
-    print(avg5)
+
     if (gap - range + len(avg5) < 0): return -1
 
     avg5 = avg5[gap - range:gap]
@@ -572,7 +572,6 @@ def filterBad2(datafm, gap=0):
     close = datafm[:, 0]
 
     avg5 = datafm[:, 1]
-    print(avg5)
     avg10 = datafm[:, 2]
     avg20 = datafm[:, 3]
     avg30 = datafm[:, 4]
@@ -603,7 +602,6 @@ def filterBad2(datafm, gap=0):
         flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap,3)
         result.append(flag)
     except:
-        raise
         1
     if(sum(result)>=1):
         return [1]

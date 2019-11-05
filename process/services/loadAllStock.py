@@ -33,7 +33,6 @@ def inner(item):
             dataframe = expendFeature.process(item)
         else:
             filename = "D:\PythonTrain\\stockListExpend\\" + str(item) + ".csv"
-            print(filename)
             dataframe = pd.read_csv(filename)
 
         flag = filter.filterBad2(dataframe)

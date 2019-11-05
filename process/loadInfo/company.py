@@ -14,15 +14,15 @@ import www.config_default as config
 
 ''' 获取业绩报表数据 '''
 def getAllFianceReport():
-    needFinaceMonth = [[2019, 2], [2019, 1],
+    needFinaceMonth = [[2019, 3],[2019, 2], [2019, 1],
                        [2018, 4], [2018, 3], [2018, 2], [2018, 1],
                        [2017, 4], [2017, 3], [2017, 2], [2017, 1],
                        [2016, 4], [2016, 3], [2016, 2], [2016, 1]]
     for i in range(len(needFinaceMonth)):
         filename = "D:\\" + str(needFinaceMonth[i][0]) + str(needFinaceMonth[i][1]) + ".csv"
-        report1 = ts.get_report_data(2019, 2)
+        report1 = ts.get_report_data(needFinaceMonth[i][0], needFinaceMonth[i][1])
         report1.to_csv(filename)
-    return
+    return needFinaceMonth
 
 
 # file3, file2, file1, 为当前周期， file32='', file22='', file12=''
@@ -68,11 +68,9 @@ def analysisQuart(file3, file2, file1, file32='', file22='', file12='', quart=1)
     return list(np.array(midinfo['code']))
 
 '''获取不同季度的信息的环比分析 '''
-def Combine():
-    list4 = analysisQuart('D:\\20184.csv', 'D:\\20174.csv', 'D:\\20164.csv', 'D:\\20183.csv', 'D:\\20173.csv',
-                          'D:\\20163.csv', 4)
-    list3 = analysisQuart('D:\\20183.csv', 'D:\\20173.csv', 'D:\\20163.csv', 'D:\\20182.csv', 'D:\\20172.csv',
-                          'D:\\20162.csv', 3)
+def Combine(needFinaceMonth=[]):
+    list3 = analysisQuart('D:\\20193.csv', 'D:\\20183.csv', 'D:\\20173.csv', 'D:\\20192.csv', 'D:\\20182.csv',
+                          'D:\\20172.csv', 3)
     list2 = analysisQuart('D:\\20192.csv', 'D:\\20182.csv', 'D:\\20172.csv', 'D:\\20191.csv', 'D:\\20181.csv',
                           'D:\\20171.csv', 2)
     list1 = analysisQuart('D:\\20191.csv', 'D:\\20181.csv', 'D:\\20171.csv', 1)
@@ -159,12 +157,9 @@ def getCompanyGonGao(stcode):
 
 
 
-def getRonzi(stcode):
-    url='http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/rzrq/index.phtml?symbol=sh600702&bdate=2019-01-01&edate=2019-10-15'
 
-
-
+ 
 if(config.init):
-    getAllFianceReport()
-    Combine()
-    getALLBaseInfo()
+    needFinaceMonth=getAllFianceReport()
+    #Combine(needFinaceMonth)
+    #getALLBaseInfo()

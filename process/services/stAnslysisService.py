@@ -1,4 +1,4 @@
-import process.loadInfo.base.company as company
+import process.loadInfo.company as company
 import pandas as pd
 import numpy as np
 

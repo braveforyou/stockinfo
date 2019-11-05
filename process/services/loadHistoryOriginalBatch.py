@@ -1,4 +1,4 @@
-import process.loadInfo.base.getTsHistoryStockFile as history
+import process.loadInfo.getTsHistoryStockFile as history
 from multiprocessing.dummy import Pool as ThreadPool
 import www.stList as consts
 

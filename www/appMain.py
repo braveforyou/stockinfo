@@ -59,15 +59,27 @@ def pageIndex():
                                 initargs=(lock, needList, filterContent, needLabel, filterLabel,))
     pool.map(inner, consts.needStockM)
     needList = np.array(needList)
+    if(len(needList)==0):
+        needList=[['300193',[1]]]
     saveInfo = pd.DataFrame(needList, columns=['stname', 'info'])
     saveInfo.to_csv("D:\\needStList.csv")
-    return render_template('login.html')
+    return render_template('search.html')
 
 
-@app.route('/sample', methods=['POST', 'GET'])
+@app.route('/sampleList', methods=['POST', 'GET'])
 def getHandler():
     blog = indexParrel()
     return render_template('stockinfo.html', page=blog['page'], blogs=blog['blogs'])
+
+
+
+@app.route('/sampleSingle', methods=['POST'])
+def searchStinfo():
+    stname = request.form['stname']
+    blog = stSingle(stname)
+    return render_template('stockinfoSingle.html',  blog=blog['stinfo'])
+
+
 
 
 # 用于数据返回，而非页面返回

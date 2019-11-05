@@ -82,9 +82,10 @@ def Combine():
 
 
 def getCompanyInfo(stname):
-    stname = int(stname.replace('st', ''))
-    quart2 = pd.read_csv('D:\\quertinfo2.csv')[['code', 'eps3', 'eps2', 'eps1']]
-    quart1 = pd.read_csv('D:\\quertinfo1.csv')[['code', 'eps3', 'eps2', 'eps1']]
+
+    stname = int(str(stname).replace('st', ''))
+    quart2 = pd.read_csv('D:\\quertinfo3.csv')[['code', 'eps3', 'eps2', 'eps1']]
+    quart1 = pd.read_csv('D:\\quertinfo2.csv')[['code', 'eps3', 'eps2', 'eps1']]
 
     quart2 = quart2.loc[quart2['code'] == stname]
     quart1 = quart1.loc[quart1['code'] == stname]
@@ -92,24 +93,24 @@ def getCompanyInfo(stname):
     quart2 = np.array(quart2)
     quart1 = np.array(quart1)
 
+    每股三季报收益详情 = ""
     每股中报收益详情 = ""
-    每股一季度报收益详情 = ""
 
-    中报每股收益下降 = 0  # 中保每股收益下降
-    中报收益各年 = [-1, -1, -1]
+    三季报报每股收益下降 = 0  # 中保每股收益下降
+    三季报收益各年 = [-1, -1, -1]
     rise1 = 0
     rise2 = 0
     if (len(quart2) != 0):
-        每股中报收益详情 = "中报  每股收益:" + str(round(quart2[0][1], 2)) + "  " + str(round(quart2[0][2], 2)) + "  " + str(
+        每股三季报收益详情 = "三季报  每股收益:" + str(round(quart2[0][1], 2)) + "  " + str(round(quart2[0][2], 2)) + "  " + str(
             round(quart2[0][3], 2)) + " 近期增长:" + str(
             round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)) + "% " + str(
             round((quart2[0][2] - quart2[0][3]) / quart2[0][3] * 100, 2)) + "%"
-        中报收益各年 = [quart2[0][1], quart2[0][2], quart2[0][3]]
+        三季报收益各年 = [quart2[0][1], quart2[0][2], quart2[0][3]]
         rise2 = round((quart2[0][1] - quart2[0][2]) / quart2[0][2] * 100, 2)
         if (quart2[0][1] < quart2[0][2]):
-            中报每股收益下降 = -1
+            三季报报每股收益下降 = -1
     if (len(quart1) != 0):
-        每股一季度报收益详情 += "  一季报 每股收益:" + str(round(quart1[0][1], 2)) + " " + str(round(quart1[0][2], 2)) + "  " + str(
+        每股中报收益详情 += "  中报 每股收益:" + str(round(quart1[0][1], 2)) + " " + str(round(quart1[0][2], 2)) + "  " + str(
             round(quart1[0][3], 2)) + " 近期增长:" + str(
             round((quart1[0][1] - quart1[0][2]) / quart1[0][2] * 100, 2)) + "% " + str(
             round((quart1[0][2] - quart1[0][3]) / quart1[0][3] * 100, 2)) + "%"
@@ -118,7 +119,7 @@ def getCompanyInfo(stname):
     if (len(quart2) > 0 and len(quart1) > 0):
         增速提高 = 1 if rise2 - rise1 > 0 else 0
 
-    return 每股中报收益详情, 每股一季度报收益详情, 中报每股收益下降, 中报收益各年, 增速提高
+    return 每股三季报收益详情, 每股中报收益详情, 三季报报每股收益下降, 三季报收益各年, 增速提高
 
 #    获取沪深上市公司基本情况
 def getALLBaseInfo():
@@ -128,7 +129,7 @@ def getALLBaseInfo():
 
 
 def getBaseInfo(stname):
-    stname = int(stname.replace('st', ''))
+    stname = int(str(stname).replace('st', ''))
     alldata = pd.read_csv("D:\\allbase.csv")
     tempinfo = alldata.loc[alldata['code'] == stname]
     tempinfo = tempinfo[['code', 'name', 'industry', 'area', 'outstanding', 'totals', 'totalAssets', 'npr', 'esp']]
@@ -155,6 +156,11 @@ def getCompanyGonGao(stcode):
                 temp.append(inner.text)
             result.append(temp)
     return result
+
+
+
+def getRonzi(stcode):
+    url='http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/rzrq/index.phtml?symbol=sh600702&bdate=2019-01-01&edate=2019-10-15'
 
 
 

@@ -1,0 +1,58 @@
+{% extends '__base__.html' %}
+
+{% block title %}早盘只卖不买，晚上可买可卖{% endblock %}
+
+{% block beforehead %}
+
+    <script>
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="uk-width-medium-3-4">
+
+            <article class="uk-article">
+                <h2>
+                    <a href="http://finance.sina.com.cn/realstock/company/{{ blog.baseinfo[0] }}/nc.shtml" target="_blank">
+                        {{ blog.baseinfo[1] }}({{ blog.baseinfo[0] }})-- {{ blog.baseinfo[2] }}--{{ blog.currentPrice }}</a>
+                </h2>
+
+                <p>流通股本:{{ blog.baseinfo[4] }} (亿) 总股本 {{ blog.baseinfo[5] }} (亿) </p>
+                <p>今年最大涨幅:{{ blog.maxrise }}% 今年当前涨幅 {{ blog.currentrise }}% </p>
+                <p style=" font-weight: 700;">收益情况：</p>
+                <p>{{ blog.companyInfo_middleMeiGuReport }}</p>
+                <p>{{ blog.companyInfo_oneQuartMeiGuReport }}</p>
+                <p>每股100收益：{{ blog.expectSallary100 }}元 资产收益率：{{ blog.baseinfo[7] }}% </p>
+
+
+                <p style=" font-weight: 700;">公告概况：</p>
+                <p>{{ blog.reportInfo }}</p>
+                <p style=" font-weight: 700;">准则打分：{{ blog.score }}</p>
+
+                <table border="1">
+                    <tr>
+                        <th>中报每股收益下降</th>
+                        <th>增速提高</th>
+                        <th>解禁</th>
+                        <th>限售</th>
+                        <th>增持</th>
+                    </tr>
+                    <tr>
+                        <td>{{ blog.refuseInfo[0] }} </td>
+                        <td>{{ blog.refuseInfo[1] }} </td>
+                        <td>{{ blog.refuseInfo[2] }} </td>
+                        <td>{{ blog.refuseInfo[3] }} </td>
+                        <td>{{ blog.refuseInfo[4] }} </td>
+
+                    </tr>
+
+                </table>
+
+            </article>
+            <hr class="uk-article-divider">
+    </div>
+
+
+{% endblock %}

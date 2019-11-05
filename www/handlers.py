@@ -59,10 +59,8 @@ def sort(content):
 def indexParrel():
     num = 1
     page = Page(num)
-
     info = pd.read_csv("D:\\needStList.csv")
     info = np.array(info)
-
 
     manager = Manager()
     cpu_count = multiprocessing.cpu_count()
@@ -80,3 +78,17 @@ def indexParrel():
         'page': page,
         'blogs': contents
     }
+
+
+
+
+
+@timerCost()
+def stSingle(stname):
+    print(stname)
+    stinfo=stService.analysisInnerInfo(stname)
+
+    return {
+        'stinfo': stinfo
+    }
+

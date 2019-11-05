@@ -29,10 +29,11 @@ def initStParam(l, l2, l3, l4, l5):
 
 def inner(item):
     try:
-        if (config.debug):
+        if (config.debug==False):
             dataframe = expendFeature.process(item)
         else:
             filename = "D:\PythonTrain\\stockListExpend\\" + str(item) + ".csv"
+            print(filename)
             dataframe = pd.read_csv(filename)
 
         flag = filter.filterBad2(dataframe)
@@ -41,6 +42,7 @@ def inner(item):
             lock.acquire()  # 加锁
             needList.append(['st' + str(item), str(flag)])
             lock.release()
-    except:
-        # raise
+    except FileNotFoundError:
         1
+    except :
+        raise

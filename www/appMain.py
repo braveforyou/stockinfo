@@ -44,6 +44,8 @@ def login():
             return redirect(url_for('login'))
         return redirect(url_for('success', name=user))
 
+import process.utils.FileUtil as fileUtil
+import process.services.loadHistoryOriginalBatch as loadBatch
 
 @app.route('/')
 def pageIndex():
@@ -57,10 +59,17 @@ def pageIndex():
     filterLabel = manager.list()
     pool = multiprocessing.Pool(cpu_count, initializer=initStParam,
                                 initargs=(lock, needList, filterContent, needLabel, filterLabel,))
+    if (config.debug == False):
+        filename = "D:\PythonTrain\stockListNow"
+        fileUtil.removeDirFiles(filename)
+        filename2 = "D:\PythonTrain\stockListExpend"
+        fileUtil.removeDirFiles(filename2)
+        loadBatch.process()
+
     pool.map(inner, consts.needStockM)
     needList = np.array(needList)
-    if(len(needList)==0):
-        needList=[['300193',[1]]]
+    if (len(needList) == 0):
+        needList = [['300193', [1]]]
     saveInfo = pd.DataFrame(needList, columns=['stname', 'info'])
     saveInfo.to_csv("D:\\needStList.csv")
     return render_template('search.html')
@@ -72,14 +81,11 @@ def getHandler():
     return render_template('stockinfo.html', page=blog['page'], blogs=blog['blogs'])
 
 
-
 @app.route('/sampleSingle', methods=['POST'])
 def searchStinfo():
     stname = request.form['stname']
     blog = stSingle(stname)
-    return render_template('stockinfoSingle.html',  blog=blog['stinfo'])
-
-
+    return render_template('stockinfoSingle.html', blog=blog['stinfo'])
 
 
 # 用于数据返回，而非页面返回

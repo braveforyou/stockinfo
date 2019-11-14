@@ -563,6 +563,18 @@ def jiaochaBegain(avg5, avg10, avg20, avg30, gap, range=6):
     return 0
 
 
+# 近五日内发生多次交叉，或者上扬
+def reachKeyLine(close, avg30,avg60):
+
+    ratio1=(close[-1]-avg30[-1])/close[-1]
+    ratio2=(close[-1]-avg60[-1])/close[-1]
+
+    if((ratio1<=0.06 and ratio1>=-0.01) or (ratio2<=0.06 and ratio2>=-0.01)):
+        return 2
+
+    return 0
+
+
 # 全部在线上  效果好 单独使用优于 haveLabel
 def filterBad2(datafm, gap=0):
     datafm = datafm[['close', 'oavg5', 'oavg10', 'oavg20', 'oavg30',
@@ -603,6 +615,17 @@ def filterBad2(datafm, gap=0):
         result.append(flag)
     except:
         1
+
+    try:
+        flag = reachKeyLine(close ,avg30, avg60)
+        result.append(flag)
+        if(flag==2):
+            return [2]
+    except:
+        1
+
+
+
     if(sum(result)>=1):
         return [1]
     return [0]

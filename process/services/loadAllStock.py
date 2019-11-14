@@ -26,8 +26,8 @@ def initStParam(l, l2, l3, l4, l5):
     filterAvg = l5
 
 
-
 def inner(item):
+
     try:
         if (config.debug==False):
             dataframe = expendFeature.process(item)
@@ -39,9 +39,11 @@ def inner(item):
 
         if (sum(flag) > -1):
             lock.acquire()  # 加锁
+            if(flag[0]==2):
+                print('reach:',item)
             needList.append(['st' + str(item), str(flag)])
             lock.release()
     except FileNotFoundError:
         1
     except :
-        raise
+        1

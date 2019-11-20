@@ -26,7 +26,7 @@ column = ['date', 'open', 'high', 'close', 'low', 'volumn', ' p_chang', 'ma5', '
 
 
 # 获取得数据不完整
-def getHistoryFile(code, type='D', startTime='2016-01-01', current=False):
+def getHistoryFile(code, type='W', startTime='2016-01-01', current=False):
     now_time = datetime.datetime.now()
     data = ts.get_hist_data(code, start=startTime, end=now_time.strftime('%Y-%m-%d'), ktype=type)
     closeData = np.array(data['close'])

@@ -569,7 +569,7 @@ def reachKeyLine(close, avg30,avg60):
     ratio1=(close[-1]-avg30[-1])/close[-1]
     ratio2=(close[-1]-avg60[-1])/close[-1]
 
-    if((ratio1<=0.06 and ratio1>=-0.01) or (ratio2<=0.06 and ratio2>=-0.01)):
+    if((ratio1<=0.05 and ratio1>=-0.01) or (ratio2<=0.05 and ratio2>=-0.01)):
         return 2
 
     return 0

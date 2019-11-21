@@ -40,7 +40,7 @@ def inner(item):
         if (sum(flag) > -1):
             lock.acquire()  # 加锁
             if(flag[0]==2):
-                print('reach:',item)
+                print('reach line:',item)
             needList.append(['st' + str(item), str(flag)])
             lock.release()
     except FileNotFoundError:

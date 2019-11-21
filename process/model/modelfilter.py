@@ -539,7 +539,6 @@ def isjiaocha(line1, line2):
 
 # 近五日内发生多次交叉，或者上扬
 def jiaochaBegain(avg5, avg10, avg20, avg30, gap, range=6):
-
     if (gap - range + len(avg5) < 0): return -1
 
     avg5 = avg5[gap - range:gap]
@@ -554,8 +553,8 @@ def jiaochaBegain(avg5, avg10, avg20, avg30, gap, range=6):
     jiaocha1030 = isjiaocha(avg10, avg30)
     jiaocha2030 = isjiaocha(avg20, avg30)
 
-
-    riseLimit = True if (avg5[-1] - avg5[- range]) / avg5[- range] < 0.08 and (avg5[-1] - avg5[- 3]) / avg5[- 3] > 0.02 else False
+    riseLimit = True if (avg5[-1] - avg5[- range]) / avg5[- range] < 0.08 and (avg5[-1] - avg5[- 3]) / avg5[
+        - 3] > 0.02 else False
 
     if (riseLimit and jiaocha510 + jiaocha530 + jiaocha520 + jiaocha1020 + jiaocha1030 + jiaocha2030 >= 3):
         return 1
@@ -564,12 +563,24 @@ def jiaochaBegain(avg5, avg10, avg20, avg30, gap, range=6):
 
 
 # 近五日内发生多次交叉，或者上扬
-def reachKeyLine(close, avg30,avg60):
+def reachKeyLine(close, avg30, avg60):
+    ratio1 = (close[-1] - avg30[-1]) / close[-1]
+    ratio2 = (close[-1] - avg60[-1]) / close[-1]
 
-    ratio1=(close[-1]-avg30[-1])/close[-1]
-    ratio2=(close[-1]-avg60[-1])/close[-1]
+    mean30_close = np.mean(avg30[-3:])
+    mean30_far = np.mean(avg30[-6:-3])
 
-    if((ratio1<=0.05 and ratio1>=-0.01) or (ratio2<=0.05 and ratio2>=-0.01)):
+    mean60_close = np.mean(avg60[-3:])
+    mean60_far = np.mean(avg60[-6: -3])
+
+    raiseRatio = (close[-1] - close[-3]) / close[-3]
+
+
+
+    if (raiseRatio >= 0.03): return 0
+
+    if (((ratio1 <= 0.05 and ratio1 >= -0.01) or (ratio2 <= 0.05 and ratio2 >= -0.01))
+            and (mean30_close >= mean30_far or mean60_close >= mean60_far)):
         return 2
 
     return 0
@@ -594,39 +605,37 @@ def filterBad2(datafm, gap=0):
     low = datafm[:, 9]
     open = datafm[:, 10]
 
-    result=[]
+    result = []
     try:
         flag = decressAdjust(avg5, avg10, avg20, close, volume, avg30)
         result.append(flag)
     except:
         1
     try:
-        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap,5)
+        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap, 5)
         result.append(flag)
     except:
         1
     try:
-        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap,4)
+        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap, 4)
         result.append(flag)
     except:
         1
     try:
-        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap,3)
+        flag = jiaochaBegain(avg5, avg10, avg20, avg30, gap, 3)
         result.append(flag)
     except:
         1
 
     try:
-        flag = reachKeyLine(close ,avg30, avg60)
+        flag = reachKeyLine(close, avg30, avg60)
         result.append(flag)
-        if(flag==2):
+        if (flag == 2):
             return [2]
     except:
+        raise
         1
 
-
-
-    if(sum(result)>=1):
+    if (sum(result) >= 1):
         return [1]
     return [0]
-

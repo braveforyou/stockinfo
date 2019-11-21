@@ -20,3 +20,6 @@ configs = {
 init = False
 # 用于控制那些每天会变得数据，在debug模式下使用一份缓存即可
 debug = False
+
+
+period="W"

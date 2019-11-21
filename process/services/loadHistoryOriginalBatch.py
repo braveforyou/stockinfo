@@ -13,17 +13,18 @@ def getStockSet(fileName):  # general function to parse tab -delimited floats
         dataMat.append(temp)
     return dataMat
 
+import www.config_default as config
 
-def getinfo(stockname,His=False):
+def getinfo(stockname,His=False,type=config.period):
     # 时间 开盘 收盘  最高 最低 成交量
-    startTime = '2016-02-01'
+    startTime = '2012-02-01'
     if(His==False):
-        startTime='2019-04-01'
+        startTime='2016-04-01'
     try:
         if(His==True):
-            history.getHistoryFile(stockname,'D',startTime)
+            history.getHistoryFile(stockname,type,startTime)
         else:
-            history.getHistoryFile(stockname, 'D', startTime, True)
+            history.getHistoryFile(stockname, type, startTime, True)
     except:
         1
 

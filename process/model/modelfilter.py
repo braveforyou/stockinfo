@@ -561,6 +561,7 @@ def jiaochaBegain(avg5, avg10, avg20, avg30, gap, range=6):
 
     return 0
 
+import www.config_default as config
 
 # 近五日内发生多次交叉，或者上扬
 def reachKeyLine(close, avg30, avg60):
@@ -579,7 +580,11 @@ def reachKeyLine(close, avg30, avg60):
 
     if (raiseRatio >= 0.03): return 0
 
-    if (((ratio1 <= 0.05 and ratio1 >= -0.01) or (ratio2 <= 0.05 and ratio2 >= -0.01))
+    thread=0.05
+    if(config.period=='W'):
+        thread=0.08
+
+    if (((ratio1 <=thread and ratio1 >= -0.01) or (ratio2 <= thread and ratio2 >= -0.01))
             and (mean30_close >= mean30_far or mean60_close >= mean60_far)):
         return 2
 
